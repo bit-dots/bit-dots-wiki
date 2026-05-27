@@ -5,10 +5,15 @@ export default defineConfig({
   description: "极简个人知识 Wiki",
   srcExclude: ['../README.md'],
   
-  // 网页标签页图标 (稍后你可以换成自己的)
-  head: [['link', { rel: 'icon', href: '/favicon.ico' }]],
+  // 网页标签页图标
+  head: [
+    ['link', { rel: 'icon', type: 'image/svg+xml', href: '/logo.svg' }]
+  ],
 
   themeConfig: {
+    // 导航栏 Logo
+    logo: '/logo.svg',
+
     // 导航栏配置
     nav: [
       { text: '首页', link: '/' },

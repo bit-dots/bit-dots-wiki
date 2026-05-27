@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- 核心流体曲线 - 象征知识的流动 -->
+  <path d="M15,50 C30,20 70,80 85,50" fill="none" stroke="#1d3557" stroke-width="4" stroke-linecap="round" stroke-opacity="0.2"/>
+  <path d="M15,50 C30,25 70,75 85,50" fill="none" stroke="#e63946" stroke-width="2" stroke-linecap="round" stroke-opacity="0.8"/>
+  
+  <!-- 节奏圆点 - 代表 Bit-Dots 的精髓 -->
+  <!-- 左侧深蓝点 -->
+  <circle cx="15" cy="50" r="7" fill="#1d3557"/>
+  <!-- 中间跳跃红点 -->
+  <circle cx="50" cy="50" r="10" fill="#e63946">
+    <animate attributeName="r" values="9;11;9" dur="3s" repeatCount="indefinite" />
+  </circle>
+  <!-- 右侧淡蓝色延伸点 -->
+  <circle cx="85" cy="50" r="6" fill="#1d3557" fill-opacity="0.4"/>
+</svg>

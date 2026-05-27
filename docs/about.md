@@ -38,7 +38,7 @@ Bit-Dots 不仅仅是一个知识库，它是我思维的延伸，是一个纯�
 如果你对这个项目感兴趣，或者有任何建议，欢迎通过以下方式交流：
 
 - **GitHub**: [bit-dots/bit-dots-wiki](https://github.com/bit-dots/bit-dots-wiki)
-- **Email**: `your-email@example.com` (别忘了换成你的隐私邮箱或真实邮箱)
+- **Email**: `暂未开放`
 
 ---
 
