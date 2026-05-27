@@ -34,7 +34,7 @@ export default defineConfig({
 
     // 社交链接
     socialLinks: [
-      { icon: 'github', link: 'https://github.com/你的用户名/bit-dots' }
+      { icon: 'github', link: 'https://github.com/bit-dots/bit-dots-wiki' }
     ],
 
     // 页脚
