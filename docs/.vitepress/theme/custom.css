@@ -1,0 +1,46 @@
+:root {
+  /* 品牌核心色 - 采用柔和的红色点缀 (Dots) */
+  --vp-c-brand-1: #e63946;
+  --vp-c-brand-2: #f1faee;
+  --vp-c-brand-soft: rgba(230, 57, 70, 0.1);
+
+  /* 字体与间距调整 - 增加呼吸感 */
+  --vp-font-family-base: "Inter", "Helvetica Neue", "Arial", sans-serif;
+  --vp-home-hero-name-color: transparent;
+  --vp-home-hero-name-background: linear-gradient(135deg, #e63946 0%, #1d3557 100%);
+}
+
+/* 极简卡片修饰 */
+.VPFeature {
+  border-radius: 12px !important;
+  transition: all 0.3s ease;
+  border: 1px solid var(--vp-c-bg-soft) !important;
+}
+
+.VPFeature:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.05);
+}
+
+/* 导航栏毛玻璃效果增强 */
+.VPNav {
+  backdrop-filter: blur(12px);
+  background-color: rgba(255, 255, 255, 0.7) !important;
+}
+
+.dark .VPNav {
+  background-color: rgba(27, 27, 31, 0.7) !important;
+}
+
+/* 文字阅读感优化 */
+.vp-doc p, .vp-doc li {
+  line-height: 1.8;
+  letter-spacing: 0.02em;
+  color: var(--vp-c-text-1);
+}
+
+/* 隐藏不必要的繁杂元素 */
+.VPLastUpdated {
+  font-size: 12px;
+  opacity: 0.6;
+}
