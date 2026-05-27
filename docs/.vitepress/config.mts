@@ -3,7 +3,6 @@ import { defineConfig } from 'vitepress'
 export default defineConfig({
   title: "Bit-Dots",
   description: "极简个人知识 Wiki",
-  ignoreDeadLinks: true,
   
   // 网页标签页图标 (稍后你可以换成自己的)
   head: [['link', { rel: 'icon', href: '/favicon.ico' }]],
