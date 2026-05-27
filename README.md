@@ -39,6 +39,10 @@
 - `docs/.vitepress/`: 存放配置文件和自定义主题。
 - `docs/public/`: 存放图片等静态资源。
 
-## 📄 开源协议
+## 📄 许可协议
 
-本项目采用 [MIT License](LICENSE) 协议。
+本项目采用组合授权方式：
+- **代码**：采用 [MIT](LICENSE) 协议。
+- **内容**：采用 [CC BY-NC-SA 4.0](LICENSE) 知识共享协议。
+
+
