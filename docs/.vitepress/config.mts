@@ -40,7 +40,7 @@ export default defineConfig({
     // 页脚
     footer: {
       message: '本站内容采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 知识共享协议',
-      copyright: 'Copyright © 2024-present Bit-Dots'
+      copyright: `Copyright © ${new Date().getFullYear()}-present Bit-Dots`
     }
   }
 })
