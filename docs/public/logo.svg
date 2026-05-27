@@ -1,32 +1,21 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-  <!-- 寂静之径 - 莫兰迪色系的极简写实设计 -->
+  <!-- 云端征途 (The Alpine Path) - 经典的 S 型盘山公路曲线 -->
   
-  <!-- 1. 远景山峦 (极简线条，增加空间层次) -->
-  <path d="M5,85 C25,60 45,75 65,45 C75,30 95,40 95,40" fill="none" stroke="#2d3748" stroke-width="1" stroke-opacity="0.1"/>
-
-  <!-- 2. 盘山公路 (之字型，透视写实) -->
-  <!-- 远景 (高冷灰) -->
-  <path d="M65,15 L80,15 L45,38" fill="none" stroke="#4a5568" stroke-width="4" stroke-linecap="round"/>
-  <!-- 中景 (灰湖蓝) -->
-  <path d="M45,38 L15,38 L65,65" fill="none" stroke="#2d3748" stroke-width="8" stroke-linecap="round"/>
-  <!-- 近景 (深岩黑) -->
-  <path d="M65,65 L20,65 L40,90" fill="none" stroke="#1a202c" stroke-width="12" stroke-linecap="round"/>
-
-  <!-- 3. 公路中心线 (冰川白细节，全模式适配) -->
-  <path d="M70,15 L78,15 M35,38 L20,38 M60,65 L45,65" stroke="#e2e8f0" stroke-width="1.2" stroke-opacity="0.5" stroke-dasharray="2 4"/>
-
-  <!-- 4. 终点的灵感之火 (香槟金) -->
-  <!-- 增加细腻的渐变光晕 -->
   <defs>
-    <radialGradient id="gold-glow" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" style="stop-color:#d4af37;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#d4af37;stop-opacity:0" />
-    </radialGradient>
+    <linearGradient id="road-grad" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#1d3557;stop-opacity:0.2" />
+      <stop offset="100%" style="stop-color:#1d3557;stop-opacity:0.8" />
+    </linearGradient>
   </defs>
-  <circle cx="65" cy="15" r="10" fill="url(#gold-glow)" fill-opacity="0.3"/>
-  <circle cx="65" cy="15" r="5" fill="#d4af37"/>
 
-  <!-- 5. 装饰点缀：极简点阵 (增加数字感) -->
-  <rect x="85" y="80" width="4" height="4" rx="1" fill="#d4af37" fill-opacity="0.2"/>
-  <rect x="92" y="80" width="4" height="4" rx="1" fill="#2d3748" fill-opacity="0.1"/>
+  <!-- S 型核心路径 (盘山公路最纯粹的曲线) -->
+  <path d="M20,85 C20,85 80,85 80,70 C80,55 20,55 20,40 C20,25 80,25 80,10" 
+        fill="none" 
+        stroke="url(#road-grad)" 
+        stroke-width="8" 
+        stroke-linecap="round" 
+        stroke-linejoin="round"/>
+  
+  <!-- 山顶的灵感之点 (Dot) -->
+  <circle cx="80" cy="10" r="10" fill="#ff3b30"/>
 </svg>
