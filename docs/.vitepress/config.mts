@@ -17,7 +17,7 @@ export default defineConfig({
     // 导航栏配置
     nav: [
       { text: '首页', link: '/' },
-      { text: '笔记', link: '/guide' },
+      { text: '笔记', link: '/intro' },
       { text: '关于', link: '/about' }
     ],
 
@@ -27,7 +27,7 @@ export default defineConfig({
         text: '开始探索',
         items: [
           { text: '关于 Bit-Dots', link: '/about' },
-          { text: '快速上手', link: '/guide' },
+          { text: '快速上手', link: '/intro' },
         ]
       }
     ],
