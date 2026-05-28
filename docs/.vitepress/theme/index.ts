@@ -6,28 +6,28 @@ export default {
   extends: DefaultTheme,
   setup() {
     onMounted(() => {
-      // 监听全局点击事件，实现点击外部关闭移动端菜单
-      document.addEventListener('click', (e) => {
+      // 使用更稳健的逻辑监听全局点击
+      window.addEventListener('click', (e) => {
         const target = e.target as HTMLElement
         
-        // 获取移动端菜单屏和汉堡包按钮
-        const navScreen = document.querySelector('.VPNavScreen')
+        // 1. 找到汉堡包按钮（它是控制状态的核心）
         const hamburger = document.querySelector('.VPNavBarHamburger')
+        // 2. 检查菜单是否处于展开状态
+        // VitePress 会在展开时设置 aria-expanded="true"
+        const isOpen = hamburger?.getAttribute('aria-expanded') === 'true'
 
-        // 检查逻辑：
-        // 1. navScreen 必须存在且包含 'active' 类（表示已展开）
-        // 2. 点击的目标不是 navScreen 内部元素
-        // 3. 点击的目标不是汉堡包按钮本身（否则会冲突，因为按钮自带切换逻辑）
-        if (
-          navScreen && 
-          navScreen.classList.contains('active') && 
-          !navScreen.contains(target) && 
-          !hamburger?.contains(target)
-        ) {
-          // 模拟点击汉堡包按钮来触发 VitePress 的关闭逻辑
-          (hamburger as HTMLElement)?.click()
+        // 3. 找到菜单屏幕内容区域
+        const navScreen = document.querySelector('.VPNavScreen')
+
+        if (isOpen && navScreen) {
+          // 如果点击的目标不在菜单屏幕内，且不是汉堡包按钮本身
+          // 则认为点击了外部区域
+          if (!navScreen.contains(target) && !hamburger?.contains(target)) {
+            // 触发点击隐藏
+            (hamburger as HTMLElement)?.click()
+          }
         }
-      })
+      }, true) // 使用捕获阶段确保优先处理
     })
   }
 }
