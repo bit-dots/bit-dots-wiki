@@ -7,7 +7,7 @@
 - **Architecture**: Content is stored as Markdown in the `docs/` directory.
 
 ## Core Guidelines
-- **Git Operations**: **NEVER** perform git commands (add, commit, push, pull) unless explicitly instructed by the user. Instead, provide a clear and concise suggested commit message for each set of changes.
+- **Git Operations**: **NEVER** perform git commands (add, commit, push, pull) unless explicitly instructed by the user. Instead, provide a suggested commit message following the **Conventional Commits** specification (e.g., `fix(scope): description`).
 - **CLAUDE.md**: Follow the behavioral guidelines in `CLAUDE.md`.
 - **Style**: Maintain the minimal, clean aesthetic of the project.
 - **Content**: Focus on tech exploration (Frontend, AI, Tools), life essays, and project archives.
