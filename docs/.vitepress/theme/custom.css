@@ -27,29 +27,33 @@
   background-color: var(--vp-nav-bg-color) !important;
 }
 
-/* 移动端菜单：采用透明全屏背景 + 局部内容容器 */
+/* 移动端菜单：右侧抽屉式设计 */
 @media (max-width: 768px) {
+  /* 整个菜单层变成半透明遮罩层 */
   .VPNavScreen {
-    /* 恢复全屏高度，但背景透明，作为“隐形遮罩” */
+    background-color: rgba(0, 0, 0, 0.5) !important;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
     height: 100vh !important;
-    top: var(--vp-nav-height) !important;
-    background-color: transparent !important;
-    transition: background-color 0.2s ease;
+    width: 100vw !important;
+    top: 0 !important;
+    left: 0 !important;
+    position: fixed !important;
+    display: flex !important;
+    justify-content: flex-end !important; /* 内容靠右 */
+    z-index: 999 !important;
   }
 
-  /* 只有内部内容区域有背景、圆角和阴影 */
+  /* 只有内部内容区域变成抽屉卡片 */
   .VPNavScreen .container {
     background-color: var(--vp-c-bg) !important;
-    max-height: 65vh;
+    width: 70vw !important; /* 占据屏幕 70% 宽度 */
+    height: 100vh !important;
+    margin: 0 !important;
+    padding: 80px 24px 24px !important; /* 顶部预留出关闭按钮的位置 */
+    box-shadow: -5px 0 25px rgba(0, 0, 0, 0.2) !important;
+    border-left: 1px solid var(--vp-c-divider) !important;
     overflow-y: auto;
-    padding: 16px 24px 32px !important;
-    border-bottom: 1px solid var(--vp-c-divider) !important;
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1) !important;
-  }
-  
-  /* 当菜单激活时，给遮罩层一点点暗色感（可选，增加交互反馈） */
-  .VPNavScreen.active {
-    background-color: rgba(0, 0, 0, 0.05) !important;
   }
 }
 
