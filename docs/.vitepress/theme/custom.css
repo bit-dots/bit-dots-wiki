@@ -22,21 +22,25 @@
   box-shadow: 0 8px 24px rgba(0,0,0,0.05);
 }
 
-/* 导航栏毛玻璃效果 */
+/* 导航栏背景适配 */
 .VPNav {
-  --vp-nav-bg-color: rgba(255, 255, 255, 0.7) !important;
-  backdrop-filter: blur(12px) !important;
-  -webkit-backdrop-filter: blur(12px) !important;
+  --vp-nav-bg-color: rgba(255, 255, 255, 0.8) !important;
 }
 
 .dark .VPNav {
-  --vp-nav-bg-color: rgba(27, 27, 31, 0.7) !important;
+  --vp-nav-bg-color: rgba(27, 27, 31, 0.8) !important;
+}
+
+/* 确保汉堡包菜单按钮可见 */
+.VPNavBarHamburger {
+  display: flex !important;
+  z-index: 100 !important;
 }
 
 /* 移动端菜单：还原为全屏模式 */
 .VPNavScreen {
   background-color: var(--vp-c-bg) !important;
-  z-index: 100 !important;
+  z-index: 200 !important;
 }
 
 /* 文字阅读感优化 */
