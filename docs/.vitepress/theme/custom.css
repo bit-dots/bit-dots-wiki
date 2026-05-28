@@ -42,6 +42,8 @@
     /* 确保背景是不透明的 */
     background-color: var(--vp-c-bg) !important;
     overflow-y: auto;
+    /* 允许点击穿透到遮罩层以外的区域（由 JS 监听关闭） */
+    pointer-events: auto !important;
   }
 
   /* 调整内部容器边距 */
