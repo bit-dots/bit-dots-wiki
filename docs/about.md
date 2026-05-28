@@ -2,14 +2,16 @@
 
 > **点滴成海，记录万物。**
 
-Bit-Dots 不仅仅是一个知识库，它是我思维的延伸，是一个纯粹、极简的灵感收集地。
+Bit-Dots 是一个极简、纯粹的个人知识空间。它不仅是知识的归档处，更是思维的延伸与数字花园。
 
 ---
 
 ## 🎨 核心理念
 
+我们坚持以下三个原则，并将其贯穿于站点的每一个细节：
+
 ::: info 极简 (Minimalism)
-去除一切不必要的干扰，让内容成为唯一的焦点。
+去除一切不必要的干扰（广告、社交杂音、过度装修），让内容成为唯一的焦点。
 :::
 
 ::: tip 持续 (Consistency)
@@ -17,28 +19,28 @@ Bit-Dots 不仅仅是一个知识库，它是我思维的延伸，是一个纯�
 :::
 
 ::: warning 纯粹 (Purity)
-没有广告，没有社交噪音，只有你和文字的深度对话。
+回归 Markdown 最原始的快感，维持文字与读者之间最深度的对话。
 :::
 
 ---
 
-## 🛠️ 技术底座
+## 🛠️ 技术实现
 
-这个站点是基于以下技术栈构建的，力求达到最快的访问速度和最优雅的阅读体验：
+本站追求极致的性能与优雅的呈现，依托以下技术驱动：
 
-- **SSG**: [VitePress](https://vitepress.dev/)
-- **Style**: Custom Minimalist CSS
-- **Deployment**: Cloudflare Pages
-- **License**: CC BY-NC-SA 4.0
+- **驱动引擎**: [VitePress](https://vitepress.dev/) (Vue 驱动的 SSG)
+- **部署平台**: [Cloudflare Pages](https://pages.cloudflare.com/) (全球 CDN 加速)
+- **开源地址**: [GitHub 仓库](https://github.com/bit-dots/bit-dots-wiki)
+- **知识共享**: [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)
 
 ---
 
 ## 📬 找到我
 
-如果你对这个项目感兴趣，或者有任何建议，欢迎通过以下方式交流：
+如果你对本站的内容感兴趣，或有任何合作/反馈建议，欢迎联系：
 
-- **GitHub**: [bit-dots/bit-dots-wiki](https://github.com/bit-dots/bit-dots-wiki)
-- **Email**: `暂未开放`
+- **GitHub**: [@bit-dots](https://github.com/bit-dots)
+- **Email**: `暂不对外开放`
 
 ---
 
