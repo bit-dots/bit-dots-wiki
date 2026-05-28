@@ -7,7 +7,8 @@
 - **Architecture**: Content is stored as Markdown in the `docs/` directory.
 
 ## Core Guidelines
-- **CLAUDE.md**: Follow the behavioral guidelines in `CLAUDE.md` (Think before coding, Simplicity first, Surgical changes, Goal-driven execution).
+- **Git Operations**: **NEVER** perform git commands (add, commit, push, pull) unless explicitly instructed by the user. Instead, provide a clear and concise suggested commit message for each set of changes.
+- **CLAUDE.md**: Follow the behavioral guidelines in `CLAUDE.md`.
 - **Style**: Maintain the minimal, clean aesthetic of the project.
 - **Content**: Focus on tech exploration (Frontend, AI, Tools), life essays, and project archives.
 
