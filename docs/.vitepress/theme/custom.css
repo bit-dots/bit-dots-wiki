@@ -22,16 +22,33 @@
   box-shadow: 0 8px 24px rgba(0,0,0,0.05);
 }
 
-/* 暂时彻底移除自定义的 .VPNav 样式，看看是不是它导致的 */
-/* 
+/* 导航栏背景 - 保持基础透明度但不使用 blur 以免冲突 */
 .VPNav {
-  ... 
+  background-color: var(--vp-nav-bg-color) !important;
 }
-*/
 
-/* 仅保留最基础的移动端菜单背景修复，不使用过高的 z-index */
-.VPNavScreen {
-  background-color: var(--vp-c-bg) !important;
+/* 移动端菜单：由全屏改为局部下拉 */
+@media (max-width: 768px) {
+  .VPNavScreen {
+    /* 限制高度，不再全屏 */
+    height: auto !important;
+    max-height: 60vh;
+    /* 居中定位 */
+    top: var(--vp-nav-height) !important;
+    padding-bottom: 24px !important;
+    /* 视觉样式：增加阴影和圆角感 */
+    border-bottom: 1px solid var(--vp-c-divider) !important;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
+    /* 确保背景是不透明的 */
+    background-color: var(--vp-c-bg) !important;
+    overflow-y: auto;
+  }
+
+  /* 调整内部容器边距 */
+  .VPNavScreen .container {
+    padding: 0 24px !important;
+    margin: 0 auto !important;
+  }
 }
 
 /* 文字阅读感优化 */
