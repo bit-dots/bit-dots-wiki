@@ -9,7 +9,7 @@
   --vp-home-hero-name-color: transparent;
   --vp-home-hero-name-background: linear-gradient(135deg, #e63946 0%, #1d3557 100%);
 
-  /* 导航栏毛玻璃背景变量 */
+  /* 导航栏毛玻璃背景变量 - 使用变量覆盖，更安全 */
   --vp-nav-bg-color: rgba(255, 255, 255, 0.7);
 }
 
@@ -32,23 +32,12 @@
 /* 导航栏毛玻璃效果 */
 .VPNav {
   backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px); /* 兼容 iOS */
 }
 
-/* 移动端菜单背景优化 - 确保点击能显示且不被遮挡 */
+/* 修复移动端菜单展开时的背景 */
 .VPNavScreen {
   background-color: var(--vp-c-bg) !important;
-  opacity: 1 !important;
-  z-index: 200 !important;
-}
-
-/* 确保导航栏容器不会拦截移动端点击事件 */
-.VPNav {
-  pointer-events: none;
-}
-
-.VPNav > * {
-  pointer-events: auto;
 }
 
 /* 文字阅读感优化 */
