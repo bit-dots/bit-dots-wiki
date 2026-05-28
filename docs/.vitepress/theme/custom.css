@@ -8,6 +8,13 @@
   --vp-font-family-base: "Inter", "Helvetica Neue", "Arial", sans-serif;
   --vp-home-hero-name-color: transparent;
   --vp-home-hero-name-background: linear-gradient(135deg, #e63946 0%, #1d3557 100%);
+
+  /* 导航栏毛玻璃背景变量 */
+  --vp-nav-bg-color: rgba(255, 255, 255, 0.7);
+}
+
+.dark {
+  --vp-nav-bg-color: rgba(27, 27, 31, 0.7);
 }
 
 /* 极简卡片修饰 */
@@ -22,18 +29,16 @@
   box-shadow: 0 8px 24px rgba(0,0,0,0.05);
 }
 
-/* 暂时注释掉可能干扰导航的样式进行排查 */
-/*
+/* 导航栏毛玻璃效果 */
 .VPNav {
   backdrop-filter: blur(12px);
-  z-index: 100;
+  -webkit-backdrop-filter: blur(12px);
 }
-*/
 
-/* 强制显示手机端菜单内容，用于排查 */
+/* 移动端菜单背景优化 */
 .VPNavScreen {
-  display: block !important;
-  background: var(--vp-c-bg) !important;
+  background-color: var(--vp-c-bg) !important;
+  opacity: 0.98;
 }
 
 /* 文字阅读感优化 */
