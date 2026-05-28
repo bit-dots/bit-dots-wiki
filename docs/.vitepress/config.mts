@@ -1,6 +1,7 @@
 import { defineConfig } from 'vitepress'
 
 export default defineConfig({
+  lang: 'zh-CN',
   title: "Bit-Dots",
   description: "极简个人知识 Wiki",
   srcExclude: ['../README.md'],
