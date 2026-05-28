@@ -22,11 +22,18 @@
   box-shadow: 0 8px 24px rgba(0,0,0,0.05);
 }
 
-/* 导航栏毛玻璃效果增强 */
+/* 暂时注释掉可能干扰导航的样式进行排查 */
+/*
 .VPNav {
   backdrop-filter: blur(12px);
-  /* 确保不遮挡点击 */
   z-index: 100;
+}
+*/
+
+/* 强制显示手机端菜单内容，用于排查 */
+.VPNavScreen {
+  display: block !important;
+  background: var(--vp-c-bg) !important;
 }
 
 /* 文字阅读感优化 */
