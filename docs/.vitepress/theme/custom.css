@@ -22,22 +22,29 @@
   box-shadow: 0 8px 24px rgba(0,0,0,0.05);
 }
 
-/* 导航栏毛玻璃效果与变量适配 */
+/* 导航栏毛玻璃效果 */
 .VPNav {
-  /* 直接在此处覆盖变量，确保优先级高于默认值 */
   --vp-nav-bg-color: rgba(255, 255, 255, 0.7) !important;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px); /* 兼容 iOS */
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
 }
 
 .dark .VPNav {
   --vp-nav-bg-color: rgba(27, 27, 31, 0.7) !important;
 }
 
-/* 修复移动端菜单展开时的背景 - 确保完全不透明且在最上层 */
+/* 核心修复：确保移动端菜单展开时，内容必须可见 */
 .VPNavScreen {
   background-color: var(--vp-c-bg) !important;
-  z-index: 100 !important;
+  z-index: 999 !important; /* 提到最高层 */
+}
+
+/* 强制菜单内的容器和列表显示出来，防止被错误隐藏 */
+.VPNavScreen .container, 
+.VPNavScreen .content {
+  opacity: 1 !important;
+  visibility: visible !important;
+  display: block !important;
 }
 
 /* 文字阅读感优化 */
