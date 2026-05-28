@@ -22,39 +22,21 @@
   box-shadow: 0 8px 24px rgba(0,0,0,0.05);
 }
 
-/* 导航栏背景 */
+/* 导航栏毛玻璃效果 */
 .VPNav {
-  background-color: var(--vp-nav-bg-color) !important;
+  --vp-nav-bg-color: rgba(255, 255, 255, 0.7) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
 }
 
-/* 移动端菜单：右侧抽屉式设计 */
-@media (max-width: 768px) {
-  /* 整个菜单层变成半透明遮罩层 */
-  .VPNavScreen {
-    background-color: rgba(0, 0, 0, 0.5) !important;
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
-    height: 100vh !important;
-    width: 100vw !important;
-    top: 0 !important;
-    left: 0 !important;
-    position: fixed !important;
-    display: flex !important;
-    justify-content: flex-end !important; /* 内容靠右 */
-    z-index: 999 !important;
-  }
+.dark .VPNav {
+  --vp-nav-bg-color: rgba(27, 27, 31, 0.7) !important;
+}
 
-  /* 只有内部内容区域变成抽屉卡片 */
-  .VPNavScreen .container {
-    background-color: var(--vp-c-bg) !important;
-    width: 70vw !important; /* 占据屏幕 70% 宽度 */
-    height: 100vh !important;
-    margin: 0 !important;
-    padding: 80px 24px 24px !important; /* 顶部预留出关闭按钮的位置 */
-    box-shadow: -5px 0 25px rgba(0, 0, 0, 0.2) !important;
-    border-left: 1px solid var(--vp-c-divider) !important;
-    overflow-y: auto;
-  }
+/* 移动端菜单：还原为全屏模式 */
+.VPNavScreen {
+  background-color: var(--vp-c-bg) !important;
+  z-index: 100 !important;
 }
 
 /* 文字阅读感优化 */
