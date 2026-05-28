@@ -22,23 +22,18 @@
   box-shadow: 0 8px 24px rgba(0,0,0,0.05);
 }
 
-/* 导航栏毛玻璃效果 - 使用变量覆盖，更安全 */
-:root {
-  --vp-nav-bg-color: rgba(255, 255, 255, 0.7);
-}
-
-.dark {
-  --vp-nav-bg-color: rgba(27, 27, 31, 0.7);
-}
-
+/* 暂时注释掉可能干扰导航的样式进行排查 */
+/*
 .VPNav {
   backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px); /* 兼容 iOS */
+  z-index: 100;
 }
+*/
 
-/* 修复移动端菜单展开时的背景 */
+/* 强制显示手机端菜单内容，用于排查 */
 .VPNavScreen {
-  background-color: var(--vp-c-bg) !important;
+  display: block !important;
+  background: var(--vp-c-bg) !important;
 }
 
 /* 文字阅读感优化 */
