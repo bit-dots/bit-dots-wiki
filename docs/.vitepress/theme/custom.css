@@ -31,16 +31,38 @@
   --vp-nav-bg-color: rgba(27, 27, 31, 0.8) !important;
 }
 
-/* 确保汉堡包菜单按钮可见 */
-.VPNavBarHamburger {
-  display: flex !important;
-  z-index: 100 !important;
+/* 
+  响应式导航调整：
+  让平板及以上设备 (>768px) 使用桌面级文字导航，
+  仅在手机端 (<768px) 使用汉堡包菜单。
+*/
+
+@media (min-width: 768px) {
+  /* 在平板及以上宽度，强制显示桌面菜单，隐藏汉堡包按钮 */
+  .VPNavBarMenu {
+    display: flex !important;
+  }
+  .VPNavBarHamburger {
+    display: none !important;
+  }
+  .VPNavScreen {
+    display: none !important;
+  }
 }
 
-/* 移动端菜单：还原为全屏模式 */
-.VPNavScreen {
-  background-color: var(--vp-c-bg) !important;
-  z-index: 200 !important;
+@media (max-width: 767px) {
+  /* 在手机端，强制显示汉堡包按钮，隐藏桌面菜单 */
+  .VPNavBarHamburger {
+    display: flex !important;
+    z-index: 100 !important;
+  }
+  .VPNavBarMenu {
+    display: none !important;
+  }
+  .VPNavScreen {
+    background-color: var(--vp-c-bg) !important;
+    z-index: 200 !important;
+  }
 }
 
 /* 文字阅读感优化 */
