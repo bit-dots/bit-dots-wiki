@@ -1,21 +1,24 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-  <!-- 云端征途 (The Alpine Path) - 经典的 S 型盘山公路曲线 -->
-  
-  <defs>
-    <linearGradient id="road-grad" x1="0%" y1="100%" x2="100%" y2="0%">
-      <stop offset="0%" style="stop-color:#1d3557;stop-opacity:0.2" />
-      <stop offset="100%" style="stop-color:#1d3557;stop-opacity:0.8" />
-    </linearGradient>
-  </defs>
+  <!-- Bit-Dots Logo: The Minimalist Tech Cat -->
+  <!-- 结合极简几何猫咪与品牌核心元素 -->
 
-  <!-- S 型核心路径 (盘山公路最纯粹的曲线) -->
-  <path d="M20,85 C20,85 80,85 80,70 C80,55 20,55 20,40 C20,25 80,25 80,10" 
-        fill="none" 
-        stroke="url(#road-grad)" 
-        stroke-width="8" 
-        stroke-linecap="round" 
-        stroke-linejoin="round"/>
+  <!-- 猫咪头部轮廓 (极简线条) -->
+  <path d="M20,40 L35,20 L50,35 L65,20 L80,40 L80,75 Q80,85 70,85 L30,85 Q20,85 20,75 Z" 
+        fill="#1d3557" opacity="0.1" />
   
-  <!-- 山顶的灵感之点 (Dot) -->
-  <circle cx="80" cy="10" r="10" fill="#ff3b30"/>
+  <path d="M20,40 L35,20 L50,35 L65,20 L80,40 L80,75 Q80,85 70,85 L30,85 Q20,85 20,75 Z" 
+        fill="none" stroke="#1d3557" stroke-width="3" stroke-linejoin="round" />
+
+  <!-- 右眼：品牌红色的 Dot (灵感之源) -->
+  <circle cx="65" cy="55" r="8" fill="#e63946" />
+
+  <!-- 左眼：深蓝色的点 (稳重) -->
+  <circle cx="35" cy="55" r="6" fill="#1d3557" />
+
+  <!-- 鼻子：一个小 Bit (数字化核心) -->
+  <rect x="46" y="65" width="8" height="8" rx="2" fill="#1d3557" />
+
+  <!-- 极简胡须 -->
+  <line x1="10" y1="60" x2="25" y2="62" stroke="#1d3557" stroke-width="1" stroke-linecap="round" />
+  <line x1="90" y1="60" x2="75" y2="62" stroke="#1d3557" stroke-width="1" stroke-linecap="round" />
 </svg>
