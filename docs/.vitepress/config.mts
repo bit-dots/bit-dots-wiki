@@ -31,6 +31,7 @@ export default defineConfig({
     sidebar: [
       {
         text: '开始探索',
+        collapsed: false,
         items: [
           { text: '关于 Bit-Dots', link: '/about' },
           { text: '知识导读', link: '/intro' },
@@ -38,9 +39,11 @@ export default defineConfig({
       },
       {
         text: '🚀 技术探索',
+        collapsed: false,
         items: [
           {
             text: 'C 语言编程',
+            collapsed: true,
             items: [
               { text: '命名约定', link: '/tech/c-programming/naming-convention' }
             ]
