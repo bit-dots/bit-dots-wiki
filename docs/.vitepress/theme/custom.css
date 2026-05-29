@@ -77,3 +77,89 @@
   font-size: 12px;
   opacity: 0.6;
 }
+
+/* 侧边栏折叠按钮样式 (Obsidian 风格) */
+.sidebar-controls {
+  display: flex;
+  justify-content: flex-end;
+  padding: 8px 12px;
+}
+
+.sidebar-toggle-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 4px;
+  background-color: transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+  font-size: 18px;
+  color: var(--vp-c-text-2);
+}
+
+.sidebar-toggle-inner:hover {
+  background-color: var(--vp-c-bg-soft);
+  color: var(--vp-c-brand-1);
+}
+
+/* 悬浮的展开按钮：仅在折叠时显示 */
+.sidebar-toggle-floating {
+  position: fixed;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 100;
+  width: 24px;
+  height: 48px;
+  background-color: var(--vp-c-bg-soft);
+  border: 1px solid var(--vp-c-divider);
+  border-left: none;
+  border-top-right-radius: 8px;
+  border-bottom-right-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  color: var(--vp-c-text-2);
+  transition: all 0.2s ease;
+  box-shadow: 2px 0 8px rgba(0,0,0,0.05);
+}
+
+.sidebar-toggle-floating:hover {
+  width: 32px;
+  color: var(--vp-c-brand-1);
+  background-color: var(--vp-c-bg);
+}
+
+/* 桌面端折叠状态下的布局调整 */
+@media (min-width: 960px) {
+  .is-sidebar-collapsed .VPSidebar {
+    transform: translateX(-100%);
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .is-sidebar-collapsed .VPContent {
+    padding-left: 0 !important;
+  }
+
+  .is-sidebar-collapsed .VPNav {
+    padding-left: 0 !important;
+  }
+
+  /* 动画平滑过渡 */
+  .VPSidebar, .VPContent, .VPNav {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  }
+}
+
+/* 手机端隐藏该按钮（手机端已有自带的菜单逻辑） */
+@media (max-width: 960px) {
+  .sidebar-toggle {
+    display: none;
+  }
+}
