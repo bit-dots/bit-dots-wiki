@@ -82,23 +82,24 @@
 .sidebar-controls {
   display: flex;
   justify-content: flex-end;
-  /* 根据用户测试，设置为 1px 达到完美对齐 */
-  padding: 12px 1px 4px;
+  /* 极简间距 */
+  padding: 4px 0px 0px;
+  /* 对齐与拉近下方内容 */
+  margin-right: -6px;
+  margin-bottom: -10px;
 }
 
 .sidebar-toggle-inner {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 24px;
-  height: 24px;
-  border-radius: 4px;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
   background-color: transparent;
   cursor: pointer;
   transition: all 0.2s ease;
   border: none;
-  font-size: 20px; /* 增大尺寸 */
-  font-weight: bold; /* 加粗，使其变“胖” */
   color: var(--vp-c-text-3);
 }
 
@@ -125,7 +126,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 14px;
+  font-size: 18px; /* 增大尺寸 */
+  font-weight: bold; /* 加粗，使其变胖 */
   color: var(--vp-c-text-2);
   transition: all 0.2s ease;
   box-shadow: 2px 0 8px rgba(0,0,0,0.05);
