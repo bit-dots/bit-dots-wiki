@@ -28,7 +28,7 @@ export default defineConfig({
         text: '开始探索',
         items: [
           { text: '关于 Bit-Dots', link: '/about' },
-          { text: '快速上手', link: '/intro' },
+          { text: '知识导读', link: '/intro' },
         ]
       }
     ],
