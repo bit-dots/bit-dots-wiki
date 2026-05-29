@@ -8,7 +8,12 @@ export default defineConfig({
   
   // 网页标签页图标
   head: [
-    ['link', { rel: 'icon', type: 'image/svg+xml', href: '/logo.svg' }]
+    ['link', { rel: 'icon', type: 'image/svg+xml', href: '/logo.svg' }],
+    ['meta', { name: 'keywords', content: 'Bit-Dots, Wiki, 知识库, 个人博客, 极简设计, VitePress' }],
+    ['meta', { name: 'author', content: 'Bit-Dots' }],
+    ['meta', { property: 'og:title', content: 'Bit-Dots - 极简个人知识 Wiki' }],
+    ['meta', { property: 'og:description', content: '点滴成海，记录万物。一个极简、纯粹、高颜值的个人知识空间。' }],
+    ['meta', { property: 'og:site_name', content: 'Bit-Dots' }],
   ],
 
   themeConfig: {
