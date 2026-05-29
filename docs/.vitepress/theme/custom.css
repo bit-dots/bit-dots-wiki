@@ -82,22 +82,24 @@
 .sidebar-controls {
   display: flex;
   justify-content: flex-end;
-  padding: 8px 12px;
+  /* 根据用户测试，设置为 1px 达到完美对齐 */
+  padding: 12px 1px 4px;
 }
 
 .sidebar-toggle-inner {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 28px;
-  height: 28px;
+  width: 24px;
+  height: 24px;
   border-radius: 4px;
   background-color: transparent;
   cursor: pointer;
   transition: all 0.2s ease;
-  border: 1px solid transparent;
-  font-size: 18px;
-  color: var(--vp-c-text-2);
+  border: none;
+  font-size: 20px; /* 增大尺寸 */
+  font-weight: bold; /* 加粗，使其变“胖” */
+  color: var(--vp-c-text-3);
 }
 
 .sidebar-toggle-inner:hover {
