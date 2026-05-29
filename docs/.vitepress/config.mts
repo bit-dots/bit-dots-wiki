@@ -35,6 +35,17 @@ export default defineConfig({
           { text: '关于 Bit-Dots', link: '/about' },
           { text: '知识导读', link: '/intro' },
         ]
+      },
+      {
+        text: '🚀 技术探索',
+        items: [
+          {
+            text: 'C 语言编程',
+            items: [
+              { text: '命名约定', link: '/tech/c-programming/naming-convention' }
+            ]
+          }
+        ]
       }
     ],
 
