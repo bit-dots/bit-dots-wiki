@@ -40,21 +40,28 @@ def fetch_feed(source_key):
             title = entry.get('title', '无标题')
             summary = clean_text(entry.get('summary') or entry.get('description', ''))
             
-            # 1. 提取分类信息
-            category = entry.get('category')
-            if not category and 'tags' in entry and entry.tags:
-                category = entry.tags[0].get('term')
+            # 1. 处理多个 Category (考虑到 0 个或多个的情况)
+            categories = []
+            if 'tags' in entry:
+                # 很多 RSS 解析器会将 category 放入 tags 列表
+                categories = [tag.get('term') for tag in entry.tags if tag.get('term')]
+            elif 'category' in entry:
+                # 如果只有一个 category 且不是列表
+                categories = [entry.category]
 
-            # 2. 尝试解析发布时间
-            pub_time = "未知"
+            # 2. 将 GMT 时间转换为北京时间 (UTC+8) 并保留秒
+            pub_time_beijing = "未知"
             if hasattr(entry, 'published_parsed') and entry.published_parsed:
-                pub_time = time.strftime('%H:%M', entry.published_parsed)
+                # 将结构化时间转为 UTC datetime，再转为北京时间
+                utc_dt = datetime(*entry.published_parsed[:6], tzinfo=timezone.utc)
+                beijing_dt = utc_dt.astimezone(timezone(timedelta(hours=8)))
+                pub_time_beijing = beijing_dt.strftime("%H:%M:%S")
 
             items.append({
                 "title": title,
                 "summary": summary,
-                "pub_time": pub_time,
-                "category": category
+                "pub_time": pub_time_beijing,
+                "categories": categories
             })
         return items
     except Exception as e:
@@ -64,13 +71,12 @@ def fetch_feed(source_key):
 def update_markdown(a_news, hk_news):
     file_path = "docs/finance/daily-news.md"
     if not os.path.exists(file_path):
-        print(f"Error: {file_path} not found.")
         return
 
     with open(file_path, "r", encoding="utf-8") as f:
         content = f.read()
 
-    # --- 1. 更新系统同步时间 (采用闭合标记控制) ---
+    # --- 1. 更新系统同步时间 ---
     tz_beijing = timezone(timedelta(hours=8))
     now_beijing = datetime.now(tz_beijing)
     sync_time_str = now_beijing.strftime("%Y-%m-%d %H:%M:%S")
@@ -86,22 +92,29 @@ def update_markdown(a_news, hk_news):
 
     # --- 2. 更新新闻内容 ---
     news_body = "\n"
-    news_body += "### 🔴 A股 & 宏观要闻\n"
-    if a_news:
-        for item in a_news:
-            category_badge = f' <Badge type="info" text="{item["category"]}" />' if item.get('category') else ""
-            news_body += f"- **[{item['pub_time']}] {item['title']}**{category_badge}\n  {item['summary']}\n\n"
-    else:
-        news_body += "- 暂无实时要闻更新\n\n"
+    
+    # 通用新闻格式化函数
+    def format_items(news_list, section_title):
+        section_content = f"### {section_title}\n"
+        if not news_list:
+            section_content += "- 暂无实时更新\n\n"
+            return section_content
+            
+        for item in news_list:
+            # 标题与时间
+            section_content += f"- **[{item['pub_time']}] {item['title']}**\n"
+            # 正文内容
+            section_content += f"  {item['summary']}\n"
+            # 类别标签 (另起一行展示多个)
+            if item['categories']:
+                badges = " ".join([f'<Badge type="info" text="{cat}" />' for cat in item['categories']])
+                section_content += f"  <br/> {badges}\n\n"
+            else:
+                section_content += "\n"
+        return section_content
 
-    news_body += "### 🇭🇰 港股投研专题\n"
-    if hk_news:
-        for item in hk_news:
-            category_badge = f' <Badge type="info" text="{item["category"]}" />' if item.get('category') else ""
-            brief = (item['summary'][:300] + '...') if len(item['summary']) > 300 else item['summary']
-            news_body += f"- **[{item['pub_time']}] {item['title']}**{category_badge}\n  _{brief}_\n\n"
-    else:
-        news_body += "- 暂无港股动态更新\n"
+    news_body += format_items(a_news, "🔴 A股 & 宏观要闻")
+    news_body += format_items(hk_news, "🇭🇰 港股投研专题")
 
     # 精准替换新闻区域
     content = re.sub(
@@ -113,7 +126,7 @@ def update_markdown(a_news, hk_news):
 
     with open(file_path, "w", encoding="utf-8") as f:
         f.write(content)
-    print(f"Daily news updated with strict marker regions. Sync time: {sync_time_str}")
+    print(f"Daily news updated with multiple categories and BJ precision time: {sync_time_str}")
 
 if __name__ == "__main__":
     a_items = fetch_feed("A股要闻")
