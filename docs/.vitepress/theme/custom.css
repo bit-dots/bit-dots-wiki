@@ -105,7 +105,7 @@
   }
   /* 关键：解除 VitePress 对正文区域内部宽度的限制 */
   .wide-page .VPDoc .content-container {
-    max-width: 100% !important;
+    max-width: 90% !important;
   }
   .wide-page .VPDoc .aside {
     display: block;
