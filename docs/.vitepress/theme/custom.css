@@ -96,14 +96,19 @@
 
 /* 8. 宽页模式 (仅针对特定页面开启) */
 @media (min-width: 960px) {
+
   .wide-page .VPDoc .container {
-    max-width: 90% !important; /* 几乎填满整个屏幕 */
+    max-width: 100% !important; /* 进一步扩大容器 */
   }
   .wide-page .VPDoc .content {
     max-width: 100% !important;
   }
+  /* 关键：解除 VitePress 对正文区域内部宽度的限制 */
+  .wide-page .VPDoc .content-container {
+    max-width: 100% !important;
+  }
   .wide-page .VPDoc .aside {
-    display: block; /* 保留右侧边栏（如果需要） */
+    display: block;
   }
 }
 
