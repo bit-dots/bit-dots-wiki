@@ -78,6 +78,103 @@
   opacity: 0.6;
 }
 
+/* ============================================================
+   内容页视觉升级方案 (The Aesthetic Face-lift)
+   ============================================================ */
+
+/* 1. 标题排版优化 - 增加字间距与质感 */
+.vp-doc h1, .vp-doc h2, .vp-doc h3 {
+  letter-spacing: -0.02em;
+  font-weight: 700;
+}
+
+.vp-doc h1 {
+  font-size: 2.2em;
+  margin-bottom: 32px;
+  background: linear-gradient(120deg, var(--vp-c-brand-1), var(--vp-c-brand-2));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* 2. 精致化的自定义容器 (Cards Style) */
+.custom-block {
+  border-radius: 12px !important;
+  border-left-width: 4px !important;
+  padding: 16px 20px !important;
+  margin: 24px 0 !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+  transition: transform 0.2s ease;
+}
+
+.custom-block:hover {
+  transform: translateX(4px);
+}
+
+.custom-block.info {
+  background-color: rgba(52, 152, 219, 0.05) !important;
+  border-color: #3498db !important;
+}
+
+.custom-block.tip {
+  background-color: rgba(46, 204, 113, 0.05) !important;
+  border-color: #2ecc71 !important;
+}
+
+.custom-block.warning {
+  background-color: rgba(241, 196, 15, 0.05) !important;
+  border-color: #f1c40f !important;
+}
+
+/* 3. Mac 风格代码块 (Premium Developer Look) */
+div[class*="language-"] {
+  border-radius: 12px !important;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  margin: 24px 0 !important;
+  overflow: hidden;
+  position: relative;
+  padding-top: 32px !important;
+}
+
+/* 代码块顶部的三个圆点 */
+div[class*="language-"]::before {
+  content: "";
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: #ff5f56;
+  box-shadow: 20px 0 0 #ffbd2e, 40px 0 0 #27c93f;
+  z-index: 2;
+}
+
+/* 代码块内部字体与行高 */
+.vp-doc div[class*="language-"] pre {
+  font-family: 'JetBrains Mono', 'Menlo', 'Monaco', 'Courier New', monospace;
+  font-size: 0.92em;
+  line-height: 1.7;
+}
+
+/* 4. 引用块优化 */
+.vp-doc blockquote {
+  border-left: 4px solid var(--vp-c-brand-soft);
+  background-color: var(--vp-c-bg-soft);
+  border-radius: 0 8px 8px 0;
+  padding: 16px 24px;
+  color: var(--vp-c-text-2);
+  font-style: italic;
+}
+
+/* 5. 分割线与间距 */
+.vp-doc hr {
+  margin: 48px 0;
+  border: 0;
+  border-top: 1px solid var(--vp-c-divider);
+  opacity: 0.5;
+}
+
 /* 侧边栏折叠按钮样式 (Obsidian 风格) */
 .sidebar-controls {
   display: flex;
