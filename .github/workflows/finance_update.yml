@@ -10,6 +10,9 @@ on:
 permissions:
   contents: write
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true # 提前适配 Node.js 24，消除弃用警告
+
 jobs:
   update-news:
     runs-on: ubuntu-latest
