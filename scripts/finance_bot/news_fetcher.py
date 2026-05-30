@@ -18,6 +18,7 @@ CONFIG = {
 }
 
 def clean_text(text):
+    """彻底清除 HTML 标签并处理特殊字符"""
     if not text:
         return ""
     clean = re.compile('<.*?>')
@@ -28,6 +29,7 @@ def clean_text(text):
     return text.strip()
 
 def fetch_feed(source_key):
+    """通用 RSS 抓取函数"""
     cfg = CONFIG[source_key]
     print(f"正在抓取 {cfg['name']}...")
     try:
@@ -48,50 +50,63 @@ def fetch_feed(source_key):
 def update_markdown(a_news, hk_news):
     file_path = "docs/finance/daily-news.md"
     if not os.path.exists(file_path):
+        print(f"Error: {file_path} not found.")
         return
 
     with open(file_path, "r", encoding="utf-8") as f:
         content = f.read()
 
-    # --- 1. 更新高精度时间 (保留标记) ---
+    # --- 1. 更新高精度时间 ---
     now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    time_html = f'<!-- UPDATE_TIME -->\n<p align="right">\n  <Badge type="tip" text="最后同步: {now_str}" />\n</p>'
-    content = re.sub(r'<!-- UPDATE_TIME -->.*?(?=<p align="right">|$)', time_html, content, flags=re.DOTALL)
-    # 如果没找到复杂结构，简单替换
-    if '最后同步:' not in content and '<!-- UPDATE_TIME -->' in content:
-        content = content.replace('<!-- UPDATE_TIME -->', time_html)
+    time_html = f'<p align="right">\n  <Badge type="tip" text="最后同步: {now_str}" />\n</p>'
+    # 仅在标记后紧跟的内容进行替换，避免跨行误删
+    if "<!-- UPDATE_TIME -->" in content:
+        # 寻找标记后的第一个空行或下一个标记
+        parts = content.split("<!-- UPDATE_TIME -->")
+        # 重新构造：[前缀] + 标记 + [新时间内容] + [后缀(去掉旧的时间内容)]
+        suffix = parts[1].split("<!--", 1) # 寻找下一个任何 HTML 标记
+        if len(suffix) > 1:
+            content = parts[0] + "<!-- UPDATE_TIME -->\n" + time_html + "\n\n<!--" + suffix[1]
+        else:
+            # 如果后面没有其他标记，则直接替换
+            content = parts[0] + "<!-- UPDATE_TIME -->\n" + time_html
 
-    # --- 2. 更新数据来源说明 (保留标记) ---
+    # --- 2. 更新数据来源说明 ---
     source_names = [cfg['name'] for cfg in CONFIG.values()]
-    source_info = f"<!-- SOURCE_INFO -->\n::: details 🛰️ 数据来源说明\n本页面资讯由自动化脚本从以下渠道抓取：**{', '.join(source_names)}**。\n:::\n"
-    content = re.sub(r'<!-- SOURCE_INFO -->.*?:::\n', source_info, content, flags=re.DOTALL)
+    source_info = f"::: details 🛰️ 数据来源说明\n本页面资讯由自动化脚本从以下渠道抓取：**{', '.join(source_names)}**。\n:::\n"
+    if "<!-- SOURCE_INFO -->" in content:
+        parts = content.split("<!-- SOURCE_INFO -->")
+        # 寻找之后第一个 --- 或下一个标记
+        suffix = parts[1].split("---", 1)
+        if len(suffix) > 1:
+            content = parts[0] + "<!-- SOURCE_INFO -->\n" + source_info + "\n---" + suffix[1]
+        else:
+            content = parts[0] + "<!-- SOURCE_INFO -->\n" + source_info
 
     # --- 3. 更新新闻内容 ---
-    news_content = "<!-- NEWS_START -->\n"
-    news_content += "### 🔴 A股 & 宏观要闻\n"
+    news_body = "\n"
+    news_body += "### 🔴 A股 & 宏观要闻\n"
     if a_news:
         for item in a_news:
-            news_content += f"- **{item['title']}**\n  {item['summary']}\n\n"
+            news_body += f"- **{item['title']}**\n  {item['summary']}\n\n"
     else:
-        news_content += "- 暂无实时要闻更新\n\n"
+        news_body += "- 暂无实时要闻更新\n\n"
 
-    news_content += "### 🇭🇰 港股投研专题\n"
+    news_body += "### 🇭🇰 港股投研专题\n"
     if hk_news:
         for item in hk_news:
             brief = (item['summary'][:300] + '...') if len(item['summary']) > 300 else item['summary']
-            news_content += f"- **{item['title']}**\n  _{brief}_\n\n"
+            news_body += f"- **{item['title']}**\n  _{brief}_\n\n"
     else:
-        news_content += "- 暂无港股动态更新\n"
-    news_content += "<!-- NEWS_END -->"
+        news_body += "- 暂无港股动态更新\n"
 
-    pattern_news = re.compile(r'<!-- NEWS_START -->.*?<!-- NEWS_END -->', re.DOTALL)
-    new_page_content = pattern_news.sub(news_content, content)
-
-    # 兜底更新（如果标记被意外删除）
-    new_page_content = re.sub(r'最后同步: \d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}', f'最后同步: {now_str}', new_page_content)
+    if "<!-- NEWS_START -->" in content and "<!-- NEWS_END -->" in content:
+        parts = content.split("<!-- NEWS_START -->")
+        suffix = parts[1].split("<!-- NEWS_END -->")
+        content = parts[0] + "<!-- NEWS_START -->" + news_body + "<!-- NEWS_END -->" + suffix[1]
 
     with open(file_path, "w", encoding="utf-8") as f:
-        f.write(new_page_content)
+        f.write(content)
     print(f"Daily news updated with precision time: {now_str}")
 
 if __name__ == "__main__":
