@@ -40,9 +40,8 @@ def fetch_feed(source_key):
             title = entry.get('title', '无标题')
             summary = clean_text(entry.get('summary') or entry.get('description', ''))
             
-            # 1. 提取分类信息 (category)
+            # 1. 提取分类信息
             category = entry.get('category')
-            # 兼容处理：有些 RSS 源会将分类放在 tags 列表中
             if not category and 'tags' in entry and entry.tags:
                 category = entry.tags[0].get('term')
 
@@ -71,35 +70,30 @@ def update_markdown(a_news, hk_news):
     with open(file_path, "r", encoding="utf-8") as f:
         content = f.read()
 
-    # --- 1. 更新系统同步时间 (校准为北京时间 UTC+8) ---
+    # --- 1. 更新系统同步时间 (采用闭合标记控制) ---
     tz_beijing = timezone(timedelta(hours=8))
     now_beijing = datetime.now(tz_beijing)
     sync_time_str = now_beijing.strftime("%Y-%m-%d %H:%M:%S")
     
-    time_html = f'<p align="right">\n  <Badge type="tip" text="最后同步: {sync_time_str}" />\n</p>'
+    time_html = f'\n<p align="right">\n  <Badge type="tip" text="最后同步: {sync_time_str}" />\n</p>\n'
     
-    if "<!-- UPDATE_TIME -->" in content:
-        parts = content.split("<!-- UPDATE_TIME -->")
-        suffix = parts[1].split("<!--", 1)
-        if len(suffix) > 1:
-            content = parts[0] + "<!-- UPDATE_TIME -->\n" + time_html + "\n\n<!--" + suffix[1]
-        else:
-            content = parts[0] + "<!-- UPDATE_TIME -->\n" + time_html
+    content = re.sub(
+        r'<!--\s*UPDATE_TIME_START\s*-->.*?<!--\s*UPDATE_TIME_END\s*-->', 
+        f'<!-- UPDATE_TIME_START -->{time_html}<!-- UPDATE_TIME_END -->', 
+        content, 
+        flags=re.DOTALL
+    )
 
     # --- 2. 更新新闻内容 ---
     news_body = "\n"
-    
-    # A股区
     news_body += "### 🔴 A股 & 宏观要闻\n"
     if a_news:
         for item in a_news:
-            # 如果有分类，则增加 Badge 徽章
             category_badge = f' <Badge type="info" text="{item["category"]}" />' if item.get('category') else ""
             news_body += f"- **[{item['pub_time']}] {item['title']}**{category_badge}\n  {item['summary']}\n\n"
     else:
         news_body += "- 暂无实时要闻更新\n\n"
 
-    # 港股区
     news_body += "### 🇭🇰 港股投研专题\n"
     if hk_news:
         for item in hk_news:
@@ -109,14 +103,17 @@ def update_markdown(a_news, hk_news):
     else:
         news_body += "- 暂无港股动态更新\n"
 
-    if "<!-- NEWS_START -->" in content and "<!-- NEWS_END -->" in content:
-        parts = content.split("<!-- NEWS_START -->")
-        suffix = parts[1].split("<!-- NEWS_END -->")
-        content = parts[0] + "<!-- NEWS_START -->" + news_body + "<!-- NEWS_END -->" + suffix[1]
+    # 精准替换新闻区域
+    content = re.sub(
+        r'<!--\s*NEWS_START\s*-->.*?<!--\s*NEWS_END\s*-->', 
+        f'<!-- NEWS_START -->{news_body}<!-- NEWS_END -->', 
+        content, 
+        flags=re.DOTALL
+    )
 
     with open(file_path, "w", encoding="utf-8") as f:
         f.write(content)
-    print(f"Finance Brief updated with Category Badges. Beijing Time: {sync_time_str}")
+    print(f"Daily news updated with strict marker regions. Sync time: {sync_time_str}")
 
 if __name__ == "__main__":
     a_items = fetch_feed("A股要闻")
