@@ -73,10 +73,21 @@
 }
 
 /* 隐藏不必要的繁杂元素 */
-.VPLastUpdated {
-  font-size: 12px;
-  opacity: 0.6;
+.VPLastUpdated { font-size: 12px; opacity: 0.6; }
+
+/* 8. 宽页模式 (仅针对特定页面开启) */
+@media (min-width: 960px) {
+  .wide-page .VPDoc .container {
+    max-width: 90% !important; /* 几乎填满整个屏幕 */
+  }
+  .wide-page .VPDoc .content {
+    max-width: 100% !important;
+  }
+  .wide-page .VPDoc .aside {
+    display: block; /* 保留右侧边栏（如果需要） */
+  }
 }
+
 
 /* ============================================================
    内容页视觉升级方案 (The Aesthetic Face-lift)

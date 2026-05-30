@@ -1,7 +1,7 @@
 import feedparser
 import os
 import re
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 import time
 
 # 数据源配置
@@ -40,17 +40,22 @@ def fetch_feed(source_key):
             title = entry.get('title', '无标题')
             summary = clean_text(entry.get('summary') or entry.get('description', ''))
             
-            # 尝试解析发布时间，如果失败则用当前时间
+            # 1. 提取分类信息 (category)
+            category = entry.get('category')
+            # 兼容处理：有些 RSS 源会将分类放在 tags 列表中
+            if not category and 'tags' in entry and entry.tags:
+                category = entry.tags[0].get('term')
+
+            # 2. 尝试解析发布时间
             pub_time = "未知"
             if hasattr(entry, 'published_parsed') and entry.published_parsed:
-                # 转换为北京时间（简单加 8 小时，或根据实际偏移）
-                # 这里使用 time.strftime 格式化 RSS 原始时间
                 pub_time = time.strftime('%H:%M', entry.published_parsed)
 
             items.append({
                 "title": title,
                 "summary": summary,
-                "pub_time": pub_time
+                "pub_time": pub_time,
+                "category": category
             })
         return items
     except Exception as e:
@@ -66,9 +71,11 @@ def update_markdown(a_news, hk_news):
     with open(file_path, "r", encoding="utf-8") as f:
         content = f.read()
 
-    # --- 1. 更新系统同步时间 (Action 运行时间) ---
-    # 这代表了系统最后一次成功执行任务的时间点
-    sync_time_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    # --- 1. 更新系统同步时间 (校准为北京时间 UTC+8) ---
+    tz_beijing = timezone(timedelta(hours=8))
+    now_beijing = datetime.now(tz_beijing)
+    sync_time_str = now_beijing.strftime("%Y-%m-%d %H:%M:%S")
+    
     time_html = f'<p align="right">\n  <Badge type="tip" text="最后同步: {sync_time_str}" />\n</p>'
     
     if "<!-- UPDATE_TIME -->" in content:
@@ -79,26 +86,16 @@ def update_markdown(a_news, hk_news):
         else:
             content = parts[0] + "<!-- UPDATE_TIME -->\n" + time_html
 
-    # --- 2. 更新数据来源说明 ---
-    source_names = [cfg['name'] for cfg in CONFIG.values()]
-    source_info = f"::: details 🛰️ 数据来源说明\n本页面资讯由自动化脚本从以下渠道抓取：**{', '.join(source_names)}**。\n:::\n"
-    if "<!-- SOURCE_INFO -->" in content:
-        parts = content.split("<!-- SOURCE_INFO -->")
-        suffix = parts[1].split("---", 1)
-        if len(suffix) > 1:
-            content = parts[0] + "<!-- SOURCE_INFO -->\n" + source_info + "\n---" + suffix[1]
-        else:
-            content = parts[0] + "<!-- SOURCE_INFO -->\n" + source_info
-
-    # --- 3. 更新新闻内容 ---
+    # --- 2. 更新新闻内容 ---
     news_body = "\n"
     
     # A股区
     news_body += "### 🔴 A股 & 宏观要闻\n"
     if a_news:
         for item in a_news:
-            # 格式：[14:30] 标题
-            news_body += f"- **[{item['pub_time']}] {item['title']}**\n  {item['summary']}\n\n"
+            # 如果有分类，则增加 Badge 徽章
+            category_badge = f' <Badge type="info" text="{item["category"]}" />' if item.get('category') else ""
+            news_body += f"- **[{item['pub_time']}] {item['title']}**{category_badge}\n  {item['summary']}\n\n"
     else:
         news_body += "- 暂无实时要闻更新\n\n"
 
@@ -106,8 +103,9 @@ def update_markdown(a_news, hk_news):
     news_body += "### 🇭🇰 港股投研专题\n"
     if hk_news:
         for item in hk_news:
+            category_badge = f' <Badge type="info" text="{item["category"]}" />' if item.get('category') else ""
             brief = (item['summary'][:300] + '...') if len(item['summary']) > 300 else item['summary']
-            news_body += f"- **[{item['pub_time']}] {item['title']}**\n  _{brief}_\n\n"
+            news_body += f"- **[{item['pub_time']}] {item['title']}**{category_badge}\n  _{brief}_\n\n"
     else:
         news_body += "- 暂无港股动态更新\n"
 
@@ -118,7 +116,7 @@ def update_markdown(a_news, hk_news):
 
     with open(file_path, "w", encoding="utf-8") as f:
         f.write(content)
-    print(f"Finance Brief updated. Sync time: {sync_time_str}")
+    print(f"Finance Brief updated with Category Badges. Beijing Time: {sync_time_str}")
 
 if __name__ == "__main__":
     a_items = fetch_feed("A股要闻")
