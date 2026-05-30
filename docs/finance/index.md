@@ -1,7 +1,7 @@
 # 💹 金融洞察看板
 
 <p align="right">
-  <Badge type="tip" text="最后更新: 2026-05-30" />
+  <Badge type="tip" text="最后更新: 2026-05-30 11:58" />
 </p>
 
 欢迎来到金融板块投研看板。本页面旨在提供高密度的信息概览，辅助进行多维度的经济形势判断。
@@ -9,10 +9,14 @@
 ---
 
 ## 🕒 今日简讯 (Today's Brief)
-::: info 自动抓取热点
-- **[SCMP China]** [Writing’s on the wall for the bond market – for those who can read it](https://www.scmp.com/opinion/world-opinion/article/3355192/writings-wall-bond-market-those-who-can-read-it?utm_source=rss_feed) (2026-05-30)
-- **[SCMP China]** [US senator warns of Indo-Pacific risks as Hegseth stresses ‘quiet’ tactics](https://www.scmp.com/week-asia/politics/article/3355408/us-senator-warns-indo-pacific-risks-hegseth-stresses-quiet-tactics?utm_source=rss_feed) (2026-05-30)
-- **[SCMP China]** [US man asserts if simple teacher and China farmer can grow a forest, world leaders can find peace](https://www.scmp.com/news/people-culture/china-personalities/article/3355358/us-man-asserts-if-simple-teacher-and-china-farmer-can-grow-forest-world-leaders-can-find-peace?utm_source=rss_feed) (2026-05-30)
+
+::: info 实时快讯 (由 AkShare 驱动)
+- **[全球快讯 00:30]** 美国11月25日12个月期国债竞拍-总金额(亿美元)
+
+- **[全球快讯 00:30]** 美国11月25日12个月期国债竞拍-高配置百分比(%)
+
+- **[全球快讯 00:30]** 美国11月25日12个月期国债竞拍-投标倍数(亿美元)
+
 :::
 ---
 
