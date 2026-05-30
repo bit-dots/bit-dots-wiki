@@ -2,6 +2,7 @@ import feedparser
 import os
 import re
 from datetime import datetime
+import time
 
 # 数据源配置
 CONFIG = {
@@ -38,9 +39,18 @@ def fetch_feed(source_key):
         for entry in d.entries[:cfg['limit']]:
             title = entry.get('title', '无标题')
             summary = clean_text(entry.get('summary') or entry.get('description', ''))
+            
+            # 尝试解析发布时间，如果失败则用当前时间
+            pub_time = "未知"
+            if hasattr(entry, 'published_parsed') and entry.published_parsed:
+                # 转换为北京时间（简单加 8 小时，或根据实际偏移）
+                # 这里使用 time.strftime 格式化 RSS 原始时间
+                pub_time = time.strftime('%H:%M', entry.published_parsed)
+
             items.append({
                 "title": title,
-                "summary": summary
+                "summary": summary,
+                "pub_time": pub_time
             })
         return items
     except Exception as e:
@@ -56,19 +66,17 @@ def update_markdown(a_news, hk_news):
     with open(file_path, "r", encoding="utf-8") as f:
         content = f.read()
 
-    # --- 1. 更新高精度时间 ---
-    now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    time_html = f'<p align="right">\n  <Badge type="tip" text="最后同步: {now_str}" />\n</p>'
-    # 仅在标记后紧跟的内容进行替换，避免跨行误删
+    # --- 1. 更新系统同步时间 (Action 运行时间) ---
+    # 这代表了系统最后一次成功执行任务的时间点
+    sync_time_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    time_html = f'<p align="right">\n  <Badge type="tip" text="最后同步: {sync_time_str}" />\n</p>'
+    
     if "<!-- UPDATE_TIME -->" in content:
-        # 寻找标记后的第一个空行或下一个标记
         parts = content.split("<!-- UPDATE_TIME -->")
-        # 重新构造：[前缀] + 标记 + [新时间内容] + [后缀(去掉旧的时间内容)]
-        suffix = parts[1].split("<!--", 1) # 寻找下一个任何 HTML 标记
+        suffix = parts[1].split("<!--", 1)
         if len(suffix) > 1:
             content = parts[0] + "<!-- UPDATE_TIME -->\n" + time_html + "\n\n<!--" + suffix[1]
         else:
-            # 如果后面没有其他标记，则直接替换
             content = parts[0] + "<!-- UPDATE_TIME -->\n" + time_html
 
     # --- 2. 更新数据来源说明 ---
@@ -76,7 +84,6 @@ def update_markdown(a_news, hk_news):
     source_info = f"::: details 🛰️ 数据来源说明\n本页面资讯由自动化脚本从以下渠道抓取：**{', '.join(source_names)}**。\n:::\n"
     if "<!-- SOURCE_INFO -->" in content:
         parts = content.split("<!-- SOURCE_INFO -->")
-        # 寻找之后第一个 --- 或下一个标记
         suffix = parts[1].split("---", 1)
         if len(suffix) > 1:
             content = parts[0] + "<!-- SOURCE_INFO -->\n" + source_info + "\n---" + suffix[1]
@@ -85,18 +92,22 @@ def update_markdown(a_news, hk_news):
 
     # --- 3. 更新新闻内容 ---
     news_body = "\n"
+    
+    # A股区
     news_body += "### 🔴 A股 & 宏观要闻\n"
     if a_news:
         for item in a_news:
-            news_body += f"- **{item['title']}**\n  {item['summary']}\n\n"
+            # 格式：[14:30] 标题
+            news_body += f"- **[{item['pub_time']}] {item['title']}**\n  {item['summary']}\n\n"
     else:
         news_body += "- 暂无实时要闻更新\n\n"
 
+    # 港股区
     news_body += "### 🇭🇰 港股投研专题\n"
     if hk_news:
         for item in hk_news:
             brief = (item['summary'][:300] + '...') if len(item['summary']) > 300 else item['summary']
-            news_body += f"- **{item['title']}**\n  _{brief}_\n\n"
+            news_body += f"- **[{item['pub_time']}] {item['title']}**\n  _{brief}_\n\n"
     else:
         news_body += "- 暂无港股动态更新\n"
 
@@ -107,7 +118,7 @@ def update_markdown(a_news, hk_news):
 
     with open(file_path, "w", encoding="utf-8") as f:
         f.write(content)
-    print(f"Daily news updated with precision time: {now_str}")
+    print(f"Finance Brief updated. Sync time: {sync_time_str}")
 
 if __name__ == "__main__":
     a_items = fetch_feed("A股要闻")
