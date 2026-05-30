@@ -1,129 +1,80 @@
-import akshare as ak
+import feedparser
 import os
 import re
-import pandas as pd
 from datetime import datetime
 
 def clean_text(text):
     """彻底清除 HTML 标签并处理特殊字符"""
     if not text:
         return ""
-    # 移除 HTML 标签
     clean = re.compile('<.*?>')
     text = re.sub(clean, '', text)
-    # 处理常见 HTML 实体
     text = text.replace('&nbsp;', ' ').replace('&amp;', '&').replace('&quot;', '"')
-    # 移除多余换行和空格
     text = re.sub(r'\s+', ' ', text)
-    # 移除财联社电报开头常见的【xxx】
-    text = re.sub(r'^【.*?】', '', text)
     return text.strip()
 
-def fetch_finance_news():
+def fetch_hk_news():
+    """抓取新时空港股 RSS 源"""
+    rss_urls = [
+        "https://www.newtimespace.com/feed/rss_template.xml?id=1&site=rss&lang=zh-cn",
+        "https://www.newtimespace.com/feed/rss_template.xml?id=100000&site=rss&lang=zh-cn"
+    ]
     news_items = []
+    seen_titles = set()
     
-    # 1. 抓取财联社电报
-    try:
-        print("正在尝试抓取财联社电报 (CLS)...")
-        cls_df = pd.DataFrame()
-        if hasattr(ak, 'stock_info_global_cls'):
-            cls_df = ak.stock_info_global_cls(symbol="全部")
-        elif hasattr(ak, 'stock_telegraph_cls'):
-            cls_df = ak.stock_telegraph_cls()
-        
-        if not cls_df.empty:
-            content_col = '内容' if '内容' in cls_df.columns else 'content'
-            time_col = '发布时间' if '发布时间' in cls_df.columns else 'datetime'
-            
-            # 取最新的 5 条
-            for _, row in cls_df.head(5).iterrows():
-                # 不再局限字数，获取完整内容
-                content = clean_text(row[content_col])
-                
-                # 处理时间格式
-                raw_time = row[time_col]
-                if isinstance(raw_time, str):
-                    time_str = raw_time[-5:] # 取 HH:MM
-                else:
-                    time_str = raw_time.strftime("%H:%M")
-
-                news_items.append({
-                    "source": "财联社",
-                    "content": content,
-                    "time": time_str
-                })
-            print(f"成功获取 {len(news_items)} 条财联社完整快讯。")
-    except Exception as e:
-        print(f"抓取财联社失败: {e}")
-
-    # 2. 如果财联社不足，尝试抓取金十快讯作为补充
-    if len(news_items) < 3:
+    for url in rss_urls:
         try:
-            print("尝试抓取全球快讯作为补充...")
-            news_df = pd.DataFrame()
-            if hasattr(ak, 'js_news'):
-                news_df = ak.js_news()
-            
-            if not news_df.empty:
-                for _, row in news_df.head(3).iterrows():
-                    content = clean_text(row.get('content', ''))
-                    if not content: continue
-                    
-                    # 时间处理
-                    raw_datetime = row.get('datetime', datetime.now())
-                    time_str = raw_datetime if isinstance(raw_datetime, str) else raw_datetime.strftime("%H:%M")
-
-                    news_items.append({
-                        "source": "全球快讯",
-                        "content": content,
-                        "time": time_str
-                    })
-                print("成功补充全球完整快讯数据。")
+            print(f"Fetching HK news from: {url}")
+            d = feedparser.parse(url)
+            for entry in d.entries[:5]:
+                title = entry.get('title', '无标题')
+                if title in seen_titles: continue
+                
+                summary = clean_text(entry.get('summary') or entry.get('description', ''))
+                # 限制长度以保持排版整洁
+                display_summary = (summary[:120] + '...') if len(summary) > 120 else summary
+                
+                news_items.append({
+                    "title": title,
+                    "summary": display_summary,
+                    "date": entry.get('published', '')[:16] # 截取日期部分
+                })
+                seen_titles.add(title)
         except Exception as e:
-            print(f"备选方案抓取失败: {e}")
+            print(f"Error fetching HK news: {e}")
     
-    return news_items
+    # 按时间戳尝试简单排序（如果有的话），这里取前 5 条最精华的
+    return news_items[:6]
 
-def update_markdown(news_items):
+def update_markdown(hk_news):
     file_path = "docs/finance/index.md"
-    if not os.path.exists(file_path):
-        return
+    if not os.path.exists(file_path): return
 
     with open(file_path, "r", encoding="utf-8") as f:
-        lines = f.readlines()
+        content = f.read()
 
-    start_index = -1
-    end_index = -1
-    for i, line in enumerate(lines):
-        if "## 🕒 今日简讯" in line:
-            start_index = i + 1
-        elif start_index != -1 and line.startswith("---"):
-            end_index = i
-            break
+    # 构建今日简讯区域的内容 (纯港股版)
+    brief_content = "## 🕒 今日简讯 (Today's Brief)\n\n"
+    
+    brief_content += "::: tip 🇭🇰 港股投研专题 (新时空)\n"
+    if hk_news:
+        for item in hk_news:
+            brief_content += f"- **{item['title']}**\n  _{item['summary']}_\n\n"
+    else:
+        brief_content += "- 暂无港股更新\n"
+    brief_content += ":::\n"
 
-    if start_index != -1 and end_index != -1:
-        # 构建新内容
-        new_content = ["\n", "::: info 实时快讯 (由 AkShare 驱动)\n"]
-        for item in news_items:
-            # 格式：- [来源 14:30] 完整内容
-            new_content.append(f"- **[{item['source']} {item['time']}]** {item['content']}\n\n")
-        new_content.append(":::\n")
+    # 正则替换原有简讯区域
+    pattern = re.compile(r'## 🕒 今日简讯.*?## 📊 市场脉搏', re.DOTALL)
+    new_page_content = pattern.sub(brief_content + "\n## 📊 市场脉搏", content)
 
-        lines[start_index:end_index] = new_content
+    # 更新最后更新时间徽章
+    new_page_content = re.sub(r'最后更新: \d{4}-\d{2}-\d{2}.*?"', f'最后更新: {datetime.now().strftime("%Y-%m-%d %H:%M")}"', new_page_content)
 
-        # 更新更新时间徽标
-        for i, line in enumerate(lines):
-            if "最后更新:" in line:
-                lines[i] = f'  <Badge type="tip" text="最后更新: {datetime.now().strftime("%Y-%m-%d %H:%M")}" />\n'
-                break
-
-        with open(file_path, "w", encoding="utf-8") as f:
-            f.writelines(lines)
-        print(f"成功更新 {file_path}，已保留完整信息。")
+    with open(file_path, "w", encoding="utf-8") as f:
+        f.write(new_page_content)
+    print("Finance dashboard updated: Focused on HK RSS source.")
 
 if __name__ == "__main__":
-    items = fetch_finance_news()
-    if items:
-        update_markdown(items)
-    else:
-        print("没有可更新的内容。")
+    h_news = fetch_hk_news()
+    update_markdown(h_news)
