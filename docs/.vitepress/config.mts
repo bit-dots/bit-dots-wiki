@@ -24,33 +24,57 @@ export default defineConfig({
     nav: [
       { text: '首页', link: '/' },
       { text: '笔记', link: '/intro' },
+      { text: '💹 金融', link: '/finance/' },
       { text: '关于', link: '/about' }
     ],
 
-    // 侧边栏配置
-    sidebar: [
-      {
-        text: '开始探索',
-        collapsed: false,
-        items: [
-          { text: '关于 Bit-Dots', link: '/about' },
-          { text: '知识导读', link: '/intro' },
-        ]
-      },
-      {
-        text: '🚀 技术探索',
-        collapsed: false,
-        items: [
-          {
-            text: 'C 语言编程',
-            collapsed: true,
-            items: [
-              { text: '命名约定', link: '/tech/c-programming/naming-convention' }
-            ]
-          }
-        ]
-      }
-    ],
+    // 侧边栏配置 - 采用多侧边栏模式实现板块隔离
+    sidebar: {
+      // 当用户在 /finance/ 目录下时的专用侧边栏
+      '/finance/': [
+        {
+          text: '💹 金融洞察',
+          collapsed: false,
+          items: [
+            { text: '板块首页', link: '/finance/' },
+            { text: '每日热点', link: '/finance/daily-news' },
+            { text: '读书笔记', link: '/finance/reading-notes' },
+            { text: '形势判断', link: '/finance/market-analysis' }
+          ]
+        },
+        {
+          text: '🏠 返回主站',
+          items: [
+            { text: '知识导读', link: '/intro' },
+            { text: '回到首页', link: '/' }
+          ]
+        }
+      ],
+      // 默认侧边栏
+      '/': [
+        {
+          text: '开始探索',
+          collapsed: false,
+          items: [
+            { text: '关于 Bit-Dots', link: '/about' },
+            { text: '知识导读', link: '/intro' },
+          ]
+        },
+        {
+          text: '🚀 技术探索',
+          collapsed: false,
+          items: [
+            {
+              text: 'C 语言编程',
+              collapsed: true,
+              items: [
+                { text: '命名约定', link: '/tech/c-programming/naming-convention' }
+              ]
+            }
+          ]
+        }
+      ]
+    },
 
     // 搜索配置
     search: {
