@@ -8,7 +8,7 @@
 </p>
 <!-- UPDATE_TIME_END -->
 
-::: details 🛰️ 数据来源说明
+::: details 🛰️ 数据来源说明 {open}
 本页面资讯由自动化脚本从以下渠道抓取：
 - **财联社电报**：[https://www.cls.cn/telegraph](https://www.cls.cn/telegraph)
 - **新时空财经**：[https://www.newtimespace.com/zh-cn/finance/](https://www.newtimespace.com/zh-cn/finance/)
