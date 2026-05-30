@@ -22,10 +22,9 @@ def clean_text(text):
 def fetch_finance_news():
     news_items = []
     
-    # 1. 抓取财联社电报 (最新接口名为 stock_info_global_cls)
+    # 1. 抓取财联社电报
     try:
         print("正在尝试抓取财联社电报 (CLS)...")
-        # 尝试多个可能的接口名以保证兼容性
         cls_df = pd.DataFrame()
         if hasattr(ak, 'stock_info_global_cls'):
             cls_df = ak.stock_info_global_cls(symbol="全部")
@@ -33,13 +32,13 @@ def fetch_finance_news():
             cls_df = ak.stock_telegraph_cls()
         
         if not cls_df.empty:
-            # 财联社新版接口列名可能是 '标题', '内容', '发布时间'
             content_col = '内容' if '内容' in cls_df.columns else 'content'
             time_col = '发布时间' if '发布时间' in cls_df.columns else 'datetime'
             
+            # 取最新的 5 条
             for _, row in cls_df.head(5).iterrows():
+                # 不再局限字数，获取完整内容
                 content = clean_text(row[content_col])
-                display_content = (content[:120] + '...') if len(content) > 120 else content
                 
                 # 处理时间格式
                 raw_time = row[time_col]
@@ -50,42 +49,36 @@ def fetch_finance_news():
 
                 news_items.append({
                     "source": "财联社",
-                    "content": display_content,
+                    "content": content,
                     "time": time_str
                 })
-            print(f"成功获取 {len(news_items)} 条财联社快讯。")
+            print(f"成功获取 {len(news_items)} 条财联社完整快讯。")
     except Exception as e:
         print(f"抓取财联社失败: {e}")
 
-    # 2. 如果财联社失败，尝试抓取金十快讯 (js_news) 或百度经济日历
+    # 2. 如果财联社不足，尝试抓取金十快讯作为补充
     if len(news_items) < 3:
         try:
             print("尝试抓取全球快讯作为补充...")
             news_df = pd.DataFrame()
             if hasattr(ak, 'js_news'):
                 news_df = ak.js_news()
-            elif hasattr(ak, 'news_economic_baidu'):
-                # 百度日历作为最后的兜底
-                news_df = ak.news_economic_baidu()
-                news_df.rename(columns={'事件': 'content', '时间': 'datetime'}, inplace=True)
             
             if not news_df.empty:
                 for _, row in news_df.head(3).iterrows():
-                    content = clean_text(row.get('content', row.get('事件', '')))
+                    content = clean_text(row.get('content', ''))
                     if not content: continue
                     
-                    display_content = (content[:120] + '...') if len(content) > 120 else content
-                    
                     # 时间处理
-                    raw_datetime = row.get('datetime', row.get('时间', datetime.now()))
+                    raw_datetime = row.get('datetime', datetime.now())
                     time_str = raw_datetime if isinstance(raw_datetime, str) else raw_datetime.strftime("%H:%M")
 
                     news_items.append({
                         "source": "全球快讯",
-                        "content": display_content,
+                        "content": content,
                         "time": time_str
                     })
-                print("成功补充全球快讯数据。")
+                print("成功补充全球完整快讯数据。")
         except Exception as e:
             print(f"备选方案抓取失败: {e}")
     
@@ -109,8 +102,10 @@ def update_markdown(news_items):
             break
 
     if start_index != -1 and end_index != -1:
+        # 构建新内容
         new_content = ["\n", "::: info 实时快讯 (由 AkShare 驱动)\n"]
         for item in news_items:
+            # 格式：- [来源 14:30] 完整内容
             new_content.append(f"- **[{item['source']} {item['time']}]** {item['content']}\n\n")
         new_content.append(":::\n")
 
@@ -124,7 +119,7 @@ def update_markdown(news_items):
 
         with open(file_path, "w", encoding="utf-8") as f:
             f.writelines(lines)
-        print(f"成功更新 {file_path}")
+        print(f"成功更新 {file_path}，已保留完整信息。")
 
 if __name__ == "__main__":
     items = fetch_finance_news()
