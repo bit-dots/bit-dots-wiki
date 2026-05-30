@@ -23,10 +23,10 @@ export default defineConfig({
 
     // 导航栏配置
     nav: [
-      { text: '首页', link: '/' },
-      { text: '笔记', link: '/intro' },
+      { text: '🏠 首页', link: '/' },
+      { text: '📝 笔记', link: '/intro' },
       { text: '💹 金融', link: '/finance/' },
-      { text: '关于', link: '/about' }
+      { text: 'ℹ️ 关于', link: '/about' }
     ],
 
     // 侧边栏配置 - 采用多侧边栏模式实现板块隔离
