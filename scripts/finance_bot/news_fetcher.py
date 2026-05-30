@@ -14,9 +14,8 @@ def clean_text(text):
     return text.strip()
 
 def fetch_hk_news():
-    """抓取新时空港股 RSS 源"""
+    """抓取新时空专业财经 RSS 源"""
     rss_urls = [
-        "https://www.newtimespace.com/feed/rss_template.xml?id=1&site=rss&lang=zh-cn",
         "https://www.newtimespace.com/feed/rss_template.xml?id=100000&site=rss&lang=zh-cn"
     ]
     news_items = []
@@ -31,12 +30,10 @@ def fetch_hk_news():
                 if title in seen_titles: continue
                 
                 summary = clean_text(entry.get('summary') or entry.get('description', ''))
-                # 限制长度以保持排版整洁
-                display_summary = (summary[:120] + '...') if len(summary) > 120 else summary
                 
                 news_items.append({
                     "title": title,
-                    "summary": display_summary,
+                    "summary": summary,
                     "date": entry.get('published', '')[:16] # 截取日期部分
                 })
                 seen_titles.add(title)
