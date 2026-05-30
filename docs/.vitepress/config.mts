@@ -5,6 +5,7 @@ export default defineConfig({
   title: "Bit-Dots",
   description: "极简个人知识 Wiki",
   srcExclude: ['../README.md'],
+  ignoreDeadLinks: true,
   
   // 网页标签页图标
   head: [
