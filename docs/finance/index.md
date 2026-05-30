@@ -1,7 +1,7 @@
 # 💹 金融洞察看板
 
 <p align="right">
-  <Badge type="tip" text="最后更新: 2024-05-29" />
+  <Badge type="tip" text="最后更新: 2026-05-30" />
 </p>
 
 欢迎来到金融板块投研看板。本页面旨在提供高密度的信息概览，辅助进行多维度的经济形势判断。
@@ -9,12 +9,11 @@
 ---
 
 ## 🕒 今日简讯 (Today's Brief)
-::: info 宏观要闻
-- **[全球]** 关注主要经济体通胀数据发布，市场对降息预期出现分歧。
-- **[产业]** AI 算力芯片需求持续强劲，带动相关半导体产业链估值重塑。
-- **[政策]** 地方债发行节奏加快，观察流动性环境的微调信号。
+::: info 自动抓取热点
+- **[SCMP China]** [Writing’s on the wall for the bond market – for those who can read it](https://www.scmp.com/opinion/world-opinion/article/3355192/writings-wall-bond-market-those-who-can-read-it?utm_source=rss_feed) (2026-05-30)
+- **[SCMP China]** [US senator warns of Indo-Pacific risks as Hegseth stresses ‘quiet’ tactics](https://www.scmp.com/week-asia/politics/article/3355408/us-senator-warns-indo-pacific-risks-hegseth-stresses-quiet-tactics?utm_source=rss_feed) (2026-05-30)
+- **[SCMP China]** [US man asserts if simple teacher and China farmer can grow a forest, world leaders can find peace](https://www.scmp.com/news/people-culture/china-personalities/article/3355358/us-man-asserts-if-simple-teacher-and-china-farmer-can-grow-forest-world-leaders-can-find-peace?utm_source=rss_feed) (2026-05-30)
 :::
-
 ---
 
 ## 📊 市场脉搏 (Market Pulse)
