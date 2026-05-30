@@ -1,62 +1,59 @@
-import akshare as ak
+import feedparser
 import os
 import re
 from datetime import datetime
 
+# 财联社与华尔街见闻的 RSS 源 (利用 RSSHub 镜像)
+RSS_FEEDS = [
+    {"name": "财联社", "url": "https://rsshub.app/cls/telegraph"},
+    {"name": "华尔街见闻", "url": "https://rsshub.app/wallstreetcn/live/global"},
+]
+
 def clean_text(text):
-    """彻底清除 HTML 标签并处理特殊字符"""
+    """清除 HTML 标签并处理特殊字符"""
     if not text:
         return ""
-    # 移除 HTML 标签
     clean = re.compile('<.*?>')
     text = re.sub(clean, '', text)
-    # 处理常见 HTML 实体
     text = text.replace('&nbsp;', ' ').replace('&amp;', '&').replace('&quot;', '"')
-    # 移除多余换行和空格
-    text = re.sub(r'\s+', ' ', text)
+    # 移除 RSS 可能带有的【xxx】前缀或广告
+    text = re.sub(r'^\s*【.*?】', '', text)
     return text.strip()
 
 def fetch_finance_news():
     news_items = []
-    try:
-        print("Fetching news from AkShare...")
-        # 获取最新资讯
-        news_df = ak.js_news(indicator="最新资讯")
-        
-        if news_df.empty:
-            print("No news found.")
-            return []
-
-        count = 0
-        for index, row in news_df.iterrows():
-            if count >= 5: break
+    for feed in RSS_FEEDS:
+        try:
+            print(f"Fetching from {feed['name']}...")
+            d = feedparser.parse(feed["url"])
             
-            raw_content = row['content']
-            content = clean_text(raw_content)
-            
-            # 限制长度，保持看板整洁
-            display_content = (content[:100] + '...') if len(content) > 100 else content
+            # 每源取前 3 条
+            for entry in d.entries[:3]:
+                # 优先取摘要，没有则取标题
+                raw_content = entry.get('summary') or entry.get('title', '')
+                content = clean_text(raw_content)
                 
-            news_items.append({
-                "time": row['datetime'].strftime("%H:%M"),
-                "content": display_content
-            })
-            count += 1
-        print(f"Successfully fetched {len(news_items)} items.")
-    except Exception as e:
-        print(f"Error fetching from AkShare: {e}")
+                # 限制长度，保持看板整洁
+                display_content = (content[:120] + '...') if len(content) > 120 else content
+                    
+                news_items.append({
+                    "source": feed["name"],
+                    "content": display_content,
+                    "date": datetime.now().strftime("%H:%M")
+                })
+        except Exception as e:
+            print(f"Error fetching {feed['name']}: {e}")
+    
     return news_items
 
 def update_markdown(news_items):
     file_path = "docs/finance/index.md"
     if not os.path.exists(file_path):
-        print(f"File not found: {file_path}")
         return
 
     with open(file_path, "r", encoding="utf-8") as f:
         lines = f.readlines()
 
-    # 寻找 ## 🕒 今日简讯 (Today's Brief) 的位置
     start_index = -1
     end_index = -1
     for i, line in enumerate(lines):
@@ -68,31 +65,29 @@ def update_markdown(news_items):
 
     if start_index != -1 and end_index != -1:
         # 构建新的内容块
-        new_content = ["\n", "::: info 实时快讯 (由 AkShare 驱动)\n"]
+        new_content = ["\n", "::: info 实时快讯 (财联社 & 华尔街见闻)\n"]
         for item in news_items:
-            # 增加双换行，确保 Markdown 列表正确渲染
-            new_content.append(f"- **[{item['time']}]** {item['content']}\n\n")
+            # 格式：- [来源 14:30] 内容
+            new_content.append(f"- **[{item['source']} {item['date']}]** {item['content']}\n\n")
         new_content.append(":::\n")
 
-        # 替换旧内容
+        # 检查内容是否有变化，避免无意义的提交
+        # (简化处理：始终更新，因为时间戳会变)
         lines[start_index:end_index] = new_content
 
-        # 更新最后更新时间
+        # 更新最后更新时间徽章
         for i, line in enumerate(lines):
             if "最后更新:" in line:
-                # 包含日期和具体时间
                 lines[i] = f'  <Badge type="tip" text="最后更新: {datetime.now().strftime("%Y-%m-%d %H:%M")}" />\n'
                 break
 
         with open(file_path, "w", encoding="utf-8") as f:
             f.writelines(lines)
-        print("Successfully updated docs/finance/index.md")
-    else:
-        print("Could not find appropriate markers in Markdown file to update.")
+        print("Successfully updated finance index.md with RSS news")
 
 if __name__ == "__main__":
     items = fetch_finance_news()
     if items:
         update_markdown(items)
     else:
-        print("No items to update.")
+        print("No items fetched.")
