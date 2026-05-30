@@ -3,7 +3,7 @@ import os
 import re
 from datetime import datetime
 
-# 数据源配置，便于脚本和页面同步
+# 数据源配置
 CONFIG = {
     "A股要闻": {
         "name": "财联社加红要闻",
@@ -18,7 +18,6 @@ CONFIG = {
 }
 
 def clean_text(text):
-    """彻底清除 HTML 标签并处理特殊字符"""
     if not text:
         return ""
     clean = re.compile('<.*?>')
@@ -29,7 +28,6 @@ def clean_text(text):
     return text.strip()
 
 def fetch_feed(source_key):
-    """通用 RSS 抓取函数"""
     cfg = CONFIG[source_key]
     print(f"正在抓取 {cfg['name']}...")
     try:
@@ -55,22 +53,20 @@ def update_markdown(a_news, hk_news):
     with open(file_path, "r", encoding="utf-8") as f:
         content = f.read()
 
-    # --- 1. 自动生成高精度更新时间 ---
-    # 精确到秒：YYYY-MM-DD HH:MM:SS
+    # --- 1. 更新高精度时间 (保留标记) ---
     now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    time_html = f'<p align="right">\n  <Badge type="tip" text="最后同步: {now_str}" />\n</p>\n'
-    
-    # 替换时间标记
-    content = re.compile(r'<!-- UPDATE_TIME -->').sub(time_html, content)
+    time_html = f'<!-- UPDATE_TIME -->\n<p align="right">\n  <Badge type="tip" text="最后同步: {now_str}" />\n</p>'
+    content = re.sub(r'<!-- UPDATE_TIME -->.*?(?=<p align="right">|$)', time_html, content, flags=re.DOTALL)
+    # 如果没找到复杂结构，简单替换
+    if '最后同步:' not in content and '<!-- UPDATE_TIME -->' in content:
+        content = content.replace('<!-- UPDATE_TIME -->', time_html)
 
-    # --- 2. 自动生成数据来源说明 ---
+    # --- 2. 更新数据来源说明 (保留标记) ---
     source_names = [cfg['name'] for cfg in CONFIG.values()]
-    source_info = f"\n::: details 🛰️ 数据来源说明\n本页面资讯由自动化脚本从以下渠道抓取：**{', '.join(source_names)}**。\n:::\n"
-    
-    # 替换来源标记
-    content = re.compile(r'<!-- SOURCE_INFO -->').sub(source_info, content)
+    source_info = f"<!-- SOURCE_INFO -->\n::: details 🛰️ 数据来源说明\n本页面资讯由自动化脚本从以下渠道抓取：**{', '.join(source_names)}**。\n:::\n"
+    content = re.sub(r'<!-- SOURCE_INFO -->.*?:::\n', source_info, content, flags=re.DOTALL)
 
-    # --- 3. 构建内容区块 ---
+    # --- 3. 更新新闻内容 ---
     news_content = "<!-- NEWS_START -->\n"
     news_content += "### 🔴 A股 & 宏观要闻\n"
     if a_news:
@@ -88,13 +84,11 @@ def update_markdown(a_news, hk_news):
         news_content += "- 暂无港股动态更新\n"
     news_content += "<!-- NEWS_END -->"
 
-    # --- 替换新闻内容 ---
     pattern_news = re.compile(r'<!-- NEWS_START -->.*?<!-- NEWS_END -->', re.DOTALL)
     new_page_content = pattern_news.sub(news_content, content)
 
-    # 最后的安全清理：如果 Markdown 里的时间徽章没有被标记替换，进行兜底正则更新
-    # (这一步是为了兼容你之前手动写死的部分)
-    new_page_content = re.sub(r'最后更新: \d{4}-\d{2}-\d{2}.*?"', f'最后同步: {now_str}"', new_page_content)
+    # 兜底更新（如果标记被意外删除）
+    new_page_content = re.sub(r'最后同步: \d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}', f'最后同步: {now_str}', new_page_content)
 
     with open(file_path, "w", encoding="utf-8") as f:
         f.write(new_page_content)

@@ -35,6 +35,6 @@ jobs:
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          git add docs/finance/index.md
+          git add docs/finance/daily-news.md
           git commit -m "chore(finance): 自动更新每日热点简讯" || echo "No changes to commit"
           git push
