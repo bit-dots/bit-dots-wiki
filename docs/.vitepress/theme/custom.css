@@ -139,6 +139,14 @@
   background-color: var(--vp-c-bg);
 }
 
+/* 手机端隐藏自定义的折叠/展开组件，因为已有原生的汉堡菜单 */
+@media (max-width: 960px) {
+  .sidebar-controls,
+  .sidebar-toggle-floating {
+    display: none !important;
+  }
+}
+
 /* 桌面端折叠状态下的布局调整 */
 @media (min-width: 960px) {
   .is-sidebar-collapsed .VPSidebar {
