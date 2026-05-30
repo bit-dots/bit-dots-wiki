@@ -1,29 +1,36 @@
-import feedparser
+import akshare as ak
 import os
 from datetime import datetime
 
-# 推荐的 RSS 源列表（可以根据需要增加）
-RSS_FEEDS = [
-    {"name": "Caixin Global", "url": "https://www.caixinglobal.com/rss/economy/"},
-    {"name": "SCMP China", "url": "https://www.scmp.com/rss/91/feed"},
-    {"name": "Wall Street CN", "url": "https://rsshub.app/wallstreetcn/live/global"}, # 示例，可能需要可用代理或源
-]
-
 def fetch_finance_news():
     news_items = []
-    for feed in RSS_FEEDS:
-        try:
-            d = feedparser.parse(feed["url"])
-            # 只取前 3 条
-            for entry in d.entries[:3]:
-                news_items.append({
-                    "source": feed["name"],
-                    "title": entry.title,
-                    "link": entry.link,
-                    "date": datetime.now().strftime("%Y-%m-%d")
-                })
-        except Exception as e:
-            print(f"Error fetching {feed['name']}: {e}")
+    try:
+        # 使用 AkShare 获取金十数据实时资讯
+        # indicator="最新资讯" 获取最近 4 小时的快讯
+        news_df = ak.js_news(indicator="最新资讯")
+        
+        # 只取前 5 条，并转换为列表
+        # 金十数据返回的列通常包含 'datetime', 'content'
+        count = 0
+        for index, row in news_df.iterrows():
+            if count >= 5: break
+            
+            # 清理内容，去除 HTML 标签（如果有）
+            content = row['content'].replace('<br/>', ' ').strip()
+            # 截断过长的内容
+            if len(content) > 200:
+                content = content[:197] + "..."
+                
+            news_items.append({
+                "source": "金十数据",
+                "title": content,
+                "link": "https://www.jin10.com/", # 金十快讯通常没有单条链接
+                "date": row['datetime'].strftime("%H:%M")
+            })
+            count += 1
+            
+    except Exception as e:
+        print(f"Error fetching from AkShare: {e}")
     return news_items
 
 def update_markdown(news_items):
@@ -46,9 +53,10 @@ def update_markdown(news_items):
 
     if start_index != -1 and end_index != -1:
         # 构建新的内容块
-        new_content = ["::: info 自动抓取热点\n"]
+        new_content = ["::: info 实时快讯 (由 AkShare 驱动)\n"]
         for item in news_items:
-            new_content.append(f"- **[{item['source']}]** [{item['title']}]({item['link']}) ({item['date']})\n")
+            # 格式：- [时间] 内容
+            new_content.append(f"- **[{item['date']}]** {item['title']}\n")
         new_content.append(":::\n")
 
         # 替换旧内容
@@ -57,12 +65,12 @@ def update_markdown(news_items):
         # 更新最后更新时间
         for i, line in enumerate(lines):
             if "最后更新:" in line:
-                lines[i] = f'  <Badge type="tip" text="最后更新: {datetime.now().strftime("%Y-%m-%d")}" />\n'
+                lines[i] = f'  <Badge type="tip" text="最后更新: {datetime.now().strftime("%Y-%m-%d %H:%M")}" />\n'
                 break
 
         with open(file_path, "w", encoding="utf-8") as f:
             f.writelines(lines)
-        print("Successfully updated finance index.md")
+        print("Successfully updated finance index.md with AkShare data")
 
 if __name__ == "__main__":
     items = fetch_finance_news()
