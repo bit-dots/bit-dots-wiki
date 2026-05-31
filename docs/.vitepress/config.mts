@@ -6,7 +6,7 @@ export default defineConfig({
   description: "极简个人知识 Wiki",
   srcExclude: ['../README.md'],
   ignoreDeadLinks: true,
-  
+
   // 网页标签页图标
   head: [
     ['link', { rel: 'icon', type: 'image/svg+xml', href: '/logo.svg' }],
@@ -75,6 +75,18 @@ export default defineConfig({
           ]
         }
       ]
+    },
+
+    // 页面底部翻页链接
+    docFooter: {
+      prev: '← 上一篇',
+      next: '下一篇 →'
+    },
+
+    // 右侧文章大纲
+    outline: {
+      level: [2, 3],
+      label: '📑 页面导航'
     },
 
     // 搜索配置

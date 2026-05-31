@@ -72,8 +72,40 @@
   color: var(--vp-c-text-1);
 }
 
-/* 隐藏不必要的繁杂元素 */
-.VPLastUpdated { font-size: 12px; opacity: 0.6; }
+/* 7. 回到顶部按钮
+   ============================================================ */
+.back-to-top {
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+  z-index: 99;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid var(--vp-c-divider);
+  background: var(--vp-c-bg);
+  color: var(--vp-c-text-2);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(10px);
+}
+.back-to-top:hover {
+  color: var(--vp-c-brand-1);
+  border-color: var(--vp-c-brand-1);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+}
+.back-to-top.visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
 
 /* 9. 全局徽章增强 (使分类标签更醒目) */
 .VPBadge {
@@ -103,7 +135,11 @@
     max-width: 100% !important;
   }
   .VPDoc .content-container {
-    max-width: 85% !important;
+    max-width: 80% !important;
+  }
+  /* 确保右侧大纲始终可见 */
+  .VPDoc .aside {
+    display: block !important;
   }
 }
 
@@ -382,4 +418,106 @@ div[class*="language-"]::before {
   .sidebar-toggle {
     display: none;
   }
+}
+
+/* ============================================================
+   10. 索引页卡片布局 — 板块首页更像「网站」而非「文档列表」
+   ============================================================ */
+.page-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px;
+  margin: 32px 0;
+}
+.page-card {
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 12px;
+  padding: 24px;
+  background: var(--vp-c-bg);
+  transition: all 0.3s ease;
+  text-decoration: none !important;
+  display: block;
+}
+.page-card:hover {
+  border-color: var(--vp-c-brand-1);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.08);
+}
+.page-card .card-icon {
+  font-size: 1.8em;
+  margin-bottom: 8px;
+}
+.page-card .card-title {
+  font-size: 1.1em;
+  font-weight: 700;
+  color: var(--vp-c-text-1);
+  margin-bottom: 6px;
+}
+.page-card .card-desc {
+  font-size: 0.85em;
+  color: var(--vp-c-text-2);
+  line-height: 1.6;
+}
+
+/* ============================================================
+   11. 右侧大纲美化 — 更像「网站目录」而非「裸列表」
+   ============================================================ */
+.VPDocAside {
+  border-left: 1px solid var(--vp-c-divider) !important;
+  padding-left: 24px !important;
+}
+.VPDocAside .outline-marker {
+  border-radius: 2px;
+}
+.VPDocAside .outline-link {
+  font-size: 0.88em;
+  line-height: 1.8;
+  transition: color 0.2s;
+}
+.VPDocAside .outline-link:hover {
+  color: var(--vp-c-brand-1) !important;
+}
+
+/* ============================================================
+   12. 底部翻页美化 — 上一篇 / 下一篇
+   ============================================================ */
+.VPDocFooter {
+  margin-top: 64px !important;
+  padding-top: 32px !important;
+  border-top: 2px solid var(--vp-c-divider) !important;
+}
+.VPDocFooter .pager {
+  display: flex;
+  justify-content: space-between;
+}
+.VPDocFooter .pager-link {
+  max-width: 46%;
+  padding: 16px 20px !important;
+  border-radius: 10px !important;
+  border: 1px solid var(--vp-c-divider) !important;
+  transition: all 0.25s ease;
+}
+.VPDocFooter .pager-link:hover {
+  border-color: var(--vp-c-brand-1) !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+}
+.VPDocFooter .desc {
+  font-size: 0.8em;
+  opacity: 0.7;
+}
+.VPDocFooter .title {
+  font-size: 0.95em;
+  font-weight: 600;
+}
+
+/* ============================================================
+   13. 最后更新时间 (全局) 样式
+   ============================================================ */
+.last-updated {
+  font-size: 0.82em !important;
+  color: var(--vp-c-text-3) !important;
+  opacity: 0.8;
+}
+.last-updated::before {
+  content: '🕒 ';
 }
