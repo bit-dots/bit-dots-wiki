@@ -1,17 +1,10 @@
 name: Daily Finance News Update
 
 on:
-  schedule:
-    # 北京时间早上 7:00 = UTC 0:00
-    - cron: '0 23 * * *'
-    # 北京时间中午 11:00 = UTC 4:00
-    - cron: '0 3 * * *'
-    # 北京时间晚上 19:30 = UTC 12:30
-    - cron: '30 12 * * *'
-    # 北京时间晚上 20:00 = UTC 12:00
-    - cron: '0 12 * * *'
-
-  workflow_dispatch: # 允许手动触发
+  workflow_dispatch: # 手动触发（GitHub 页面 / API）
+  repository_dispatch: # 由 Azure 云函数通过 GitHub API 触发
+    types:
+      - azure-timer-trigger
 
 # 必须显式开启写权限，否则机器人无法推送代码
 permissions:
