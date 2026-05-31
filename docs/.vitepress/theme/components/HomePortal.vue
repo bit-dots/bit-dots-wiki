@@ -1,0 +1,171 @@
+<template>
+  <div class="home-portal">
+    <!-- 顶部欢迎区 -->
+    <section class="hero-section">
+      <div class="hero-content">
+        <h1 class="title">
+          <span class="gradient-text">Bit-Dots</span>
+        </h1>
+        <p class="tagline">点滴成海，记录万物</p>
+        <div class="actions">
+          <a href="/intro" class="btn primary">开始探索</a>
+          <a href="/about" class="btn secondary">关于本站</a>
+        </div>
+      </div>
+      <div class="hero-bg">
+        <div class="dot-pattern"></div>
+      </div>
+    </section>
+
+    <!-- Bento 网关区 -->
+    <section class="bento-grid">
+      <div class="bento-item tech" @click="navigate('/tech/c-programming/naming-convention')">
+        <div class="icon">🚀</div>
+        <h3>技术探索</h3>
+        <p>Vue, AI, 效率工具与代码实践</p>
+      </div>
+      <div class="bento-item finance" @click="navigate('/finance/')">
+        <div class="icon">💹</div>
+        <h3>金融洞察</h3>
+        <p>市场分析与读书笔记</p>
+      </div>
+      <div class="bento-item life">
+        <div class="icon">☕</div>
+        <h3>生活随笔</h3>
+        <p>摄影、旅行与感悟</p>
+      </div>
+      <div class="bento-item project">
+        <div class="icon">📁</div>
+        <h3>项目档案</h3>
+        <p>过去与未来的创造记录</p>
+      </div>
+    </section>
+  </div>
+</template>
+
+<script setup>
+import { useRouter } from 'vitepress'
+const { go } = useRouter()
+
+const navigate = (path) => {
+  go(path)
+}
+</script>
+
+<style scoped>
+.home-portal {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.hero-section {
+  position: relative;
+  text-align: center;
+  padding: 80px 0;
+  overflow: hidden;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+}
+
+.title {
+  font-size: 4rem;
+  font-weight: 800;
+  margin: 0;
+  letter-spacing: -2px;
+}
+
+.gradient-text {
+  background: linear-gradient(135deg, #e63946 0%, #1d3557 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.tagline {
+  font-size: 1.5rem;
+  color: var(--vp-c-text-2);
+  margin: 20px 0 40px;
+}
+
+.actions {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+}
+
+.btn {
+  padding: 12px 32px;
+  border-radius: 12px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+.btn.primary {
+  background: var(--vp-c-brand-1);
+  color: white;
+}
+
+.btn.primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(230, 57, 70, 0.3);
+}
+
+.btn.secondary {
+  border: 1px solid var(--vp-c-divider);
+  color: var(--vp-c-text-1);
+}
+
+.btn.secondary:hover {
+  background: var(--vp-c-bg-soft);
+}
+
+/* Bento Grid */
+.bento-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(2, 180px);
+  gap: 20px;
+  margin-top: 40px;
+}
+
+.bento-item {
+  background: var(--vp-c-bg-soft);
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 24px;
+  padding: 24px;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.bento-item:hover {
+  transform: translateY(-8px);
+  border-color: var(--vp-c-brand-1);
+  background: var(--vp-c-bg);
+  box-shadow: 0 12px 32px rgba(0,0,0,0.1);
+}
+
+.bento-item.tech { grid-column: span 2; grid-row: span 2; }
+.bento-item.finance { grid-column: span 2; }
+.bento-item.life { grid-column: span 1; }
+.bento-item.project { grid-column: span 1; }
+
+.icon { font-size: 2rem; margin-bottom: 12px; }
+h3 { margin: 0; font-size: 1.25rem; }
+p { color: var(--vp-c-text-2); font-size: 0.9rem; margin: 8px 0 0; }
+
+@media (max-width: 768px) {
+  .bento-grid {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto;
+  }
+  .bento-item.tech, .bento-item.finance { grid-column: span 2; }
+  .bento-item.life, .bento-item.project { grid-column: span 1; }
+  .title { font-size: 3rem; }
+}
+</style>

@@ -1,10 +1,15 @@
 import { h, ref, onMounted, watch, computed } from 'vue'
 import { useRoute } from 'vitepress'
 import DefaultTheme from 'vitepress/theme'
+import HomePortal from './components/HomePortal.vue'
 import './custom.css'
 
 export default {
   extends: DefaultTheme,
+  enhanceApp({ app }) {
+    // 注册自定义组件
+    app.component('HomePortal', HomePortal)
+  },
   Layout: () => {
     const isCollapsed = ref(false)
     const route = useRoute()

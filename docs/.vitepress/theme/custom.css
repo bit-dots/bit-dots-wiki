@@ -22,13 +22,25 @@
   box-shadow: 0 8px 24px rgba(0,0,0,0.05);
 }
 
-/* 导航栏背景适配 */
+/* 导航栏背景适配 - 确保全宽透明与毛玻璃效果一致 */
 .VPNav {
-  --vp-nav-bg-color: rgba(255, 255, 255, 0.95) !important;
+  --vp-nav-bg-color: rgba(255, 255, 255, 0.7) !important;
+  backdrop-filter: blur(16px);
 }
 
 .dark .VPNav {
-  --vp-nav-bg-color: rgba(27, 27, 31, 0.95) !important;
+  --vp-nav-bg-color: rgba(27, 27, 31, 0.7) !important;
+}
+
+/* 解决收起侧边栏后，Logo 区域可能出现的背景不一致或不模糊问题 */
+.VPNavBar {
+  background-color: transparent !important;
+  backdrop-filter: blur(16px) !important;
+}
+
+/* 确保 Logo 所在的 Title 区域不携带额外背景 */
+.VPNavBarTitle {
+  background-color: transparent !important;
 }
 
 /* 
@@ -168,6 +180,8 @@
   margin: 24px 0 !important;
   box-shadow: 0 4px 12px rgba(0,0,0,0.03);
   transition: transform 0.2s ease;
+  background-color: var(--vp-c-bg-soft) !important; /* 使用实色背景 */
+  backdrop-filter: blur(12px); /* 强化毛玻璃 */
 }
 
 .custom-block:hover {
@@ -175,17 +189,14 @@
 }
 
 .custom-block.info {
-  background-color: rgba(52, 152, 219, 0.05) !important;
   border-color: #3498db !important;
 }
 
 .custom-block.tip {
-  background-color: rgba(46, 204, 113, 0.05) !important;
   border-color: #2ecc71 !important;
 }
 
 .custom-block.warning {
-  background-color: rgba(241, 196, 15, 0.05) !important;
   border-color: #f1c40f !important;
 }
 
@@ -274,15 +285,15 @@ div[class*="language-"]::before {
 
 /* 4. 特性卡片深度优化 */
 .VPFeature {
-  background-color: rgba(255, 255, 255, 0.6) !important;
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  background-color: var(--vp-c-bg-soft) !important; /* 改为实色背景 */
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--vp-c-divider) !important;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02) !important;
 }
 
 .dark .VPFeature {
-  background-color: rgba(30, 30, 34, 0.6) !important;
-  border: 1px solid rgba(255, 255, 255, 0.05) !important;
+  background-color: var(--vp-c-bg-soft) !important;
+  border: 1px solid var(--vp-c-divider) !important;
 }
 
 .VPFeature:hover {
