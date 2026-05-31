@@ -334,14 +334,13 @@ div[class*="language-"]::before {
   font-size: 0.9em;
   padding: 12px;
 }
+/* ── 左侧边栏控制按钮 ── */
 .sidebar-controls {
   display: flex;
   justify-content: flex-end;
-  /* 极简间距 */
   padding: 4px 0px 0px;
-  /* 对齐与拉近下方内容 */
-  margin-right: -6px;
   margin-bottom: -10px;
+  margin-right: -6px;
 }
 
 .sidebar-toggle-inner {
@@ -363,10 +362,39 @@ div[class*="language-"]::before {
   color: var(--vp-c-brand-1);
 }
 
-/* 悬浮的展开按钮：仅在折叠时显示 */
-.sidebar-toggle-floating {
+/* ── 右侧大纲控制按钮 ── */
+.aside-controls {
+  display: flex;
+  justify-content: flex-start;
+  padding: 0px 0px 0px;
+  margin-top: -30px;    /* 添加或修改这一行，负值越大越往上挪 */
+  margin-left: 5px; /* 独立的大纲偏移 */
+  margin-bottom: 0px;
+  margin-right: -20px; /* 独立的大纲偏移 */
+}
+
+.aside-toggle-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  background-color: transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+  color: var(--vp-c-text-3);
+}
+
+.aside-toggle-inner:hover {
+  background-color: var(--vp-c-bg-soft);
+  color: var(--vp-c-brand-1);
+}
+
+/* 悬浮展开按钮：通用样式 */
+.sidebar-toggle-floating, .aside-toggle-floating {
   position: fixed;
-  left: 0;
   top: 50%;
   transform: translateY(-50%);
   z-index: 100;
@@ -374,53 +402,71 @@ div[class*="language-"]::before {
   height: 48px;
   background-color: var(--vp-c-bg-soft);
   border: 1px solid var(--vp-c-divider);
-  border-left: none;
-  border-top-right-radius: 8px;
-  border-bottom-right-radius: 8px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 18px; /* 增大尺寸 */
-  font-weight: bold; /* 加粗，使其变胖 */
+  font-size: 18px;
+  font-weight: bold;
   color: var(--vp-c-text-2);
   transition: all 0.2s ease;
-  box-shadow: 2px 0 8px rgba(0,0,0,0.05);
+  box-shadow: 0 0 8px rgba(0,0,0,0.05);
 }
 
-.sidebar-toggle-floating:hover {
+.sidebar-toggle-floating {
+  left: 0;
+  border-left: none;
+  border-top-right-radius: 8px;
+  border-bottom-right-radius: 8px;
+}
+
+.aside-toggle-floating {
+  right: 0;
+  border-right: none;
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
+}
+
+.sidebar-toggle-floating:hover, .aside-toggle-floating:hover {
   width: 32px;
   color: var(--vp-c-brand-1);
   background-color: var(--vp-c-bg);
 }
 
-/* 手机端隐藏自定义的折叠/展开组件，因为已有原生的汉堡菜单 */
-@media (max-width: 960px) {
-  .sidebar-controls,
-  .sidebar-toggle-floating {
-    display: none !important;
-  }
-}
-
 /* 桌面端折叠状态下的布局调整 */
 @media (min-width: 960px) {
+  /* 侧边栏折叠 */
   .is-sidebar-collapsed .VPSidebar {
     transform: translateX(-100%);
     opacity: 0;
     pointer-events: none;
   }
-
   .is-sidebar-collapsed .VPContent {
     padding-left: 0 !important;
   }
-
   .is-sidebar-collapsed .VPNav {
     padding-left: 0 !important;
   }
 
+  /* 大纲折叠 */
+  .is-aside-collapsed .VPDoc .aside {
+    display: none !important;
+  }
+  .is-aside-collapsed .VPDoc .content-container {
+    max-width: 100% !important; /* 折叠后内容加宽 */
+  }
+
   /* 动画平滑过渡 */
-  .VPSidebar, .VPContent, .VPNav {
+  .VPSidebar, .VPContent, .VPNav, .VPDoc .aside, .VPDoc .content-container {
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  }
+}
+
+/* 手机端隐藏折叠/展开组件 */
+@media (max-width: 960px) {
+  .sidebar-controls, .aside-controls,
+  .sidebar-toggle-floating, .aside-toggle-floating {
+    display: none !important;
   }
 }
 
@@ -471,22 +517,58 @@ div[class*="language-"]::before {
 }
 
 /* ============================================================
-   11. 右侧大纲美化 — 更像「网站目录」而非「裸列表」
+   11. 右侧大纲美化 — 精致导航
    ============================================================ */
 .VPDocAside {
   border-left: 1px solid var(--vp-c-divider) !important;
-  padding-left: 24px !important;
+  padding-left: 20px !important;
 }
-.VPDocAside .outline-marker {
-  border-radius: 2px;
+
+/* 标题样式 */
+.VPDocAside .content .outline-title {
+  font-size: 0.75rem !important;
+  font-weight: 700 !important;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--vp-c-text-3);
+  margin-bottom: 12px;
 }
+
 .VPDocAside .outline-link {
-  font-size: 0.88em;
-  line-height: 1.8;
-  transition: color 0.2s;
+  font-size: 0.82rem !important;
+  font-weight: 500;
+  line-height: 2;
+  color: var(--vp-c-text-2);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 2px 0;
+  display: block;
 }
+
 .VPDocAside .outline-link:hover {
   color: var(--vp-c-brand-1) !important;
+  transform: translateX(2px);
+}
+
+.VPDocAside .outline-link.active {
+  color: var(--vp-c-brand-1) !important;
+  font-weight: 700;
+}
+
+/* 轨道线指示器优化 */
+.VPDocAside .outline-marker {
+  width: 2px !important;
+  background-color: var(--vp-c-brand-1) !important;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+/* 额外信息卡片（可选，如果Aside里有其他组件） */
+.VPDocAside .aside-card {
+  background: var(--vp-c-bg-soft);
+  border-radius: 12px;
+  padding: 16px;
+  margin-top: 24px;
+  border: 1px solid var(--vp-c-divider);
 }
 
 /* ============================================================
