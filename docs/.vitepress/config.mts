@@ -57,7 +57,6 @@ export default defineConfig({
           text: '开始探索',
           collapsed: false,
           items: [
-            { text: '关于 Bit-Dots', link: '/about' },
             { text: '知识导读', link: '/intro' },
           ]
         },

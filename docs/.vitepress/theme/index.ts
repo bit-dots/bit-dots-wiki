@@ -2,6 +2,7 @@ import { h, ref, onMounted, watch, computed, nextTick } from 'vue'
 import { useRoute, useRouter } from 'vitepress'
 import DefaultTheme from 'vitepress/theme'
 import HomePortal from './components/HomePortal.vue'
+import AboutPage from './components/AboutPage.vue'
 import './custom.css'
 
 export default {
@@ -9,6 +10,7 @@ export default {
   enhanceApp({ app, router }) {
     // 注册自定义组件
     app.component('HomePortal', HomePortal)
+    app.component('AboutPage', AboutPage)
 
     // 实现 View Transitions 动画
     if (typeof window !== 'undefined') {
