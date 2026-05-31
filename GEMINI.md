@@ -16,7 +16,9 @@
 - **Dev Server**: `npm run docs:dev`
 - **Build**: `npm run docs:build`
 - **Preview**: `npm run docs:preview`
-- **Source Files**: Main content is in `docs/*.md`. Configuration is in `docs/.vitepress/config.mts`.
+- **Source Files**: Main content is in `docs/*.md`. Configuration is in `docs/.vitepress/theme/config.mts`.
+- **Git Commit Message**: 每次修改代码或内容后，**必须**提供一个符合 Conventional Commits 规范的中文 Git commit message。
+
 
 ## Key Files & Directories
 - `docs/`: Markdown content.

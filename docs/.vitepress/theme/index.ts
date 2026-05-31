@@ -1,14 +1,24 @@
-import { h, ref, onMounted, watch, computed } from 'vue'
-import { useRoute } from 'vitepress'
+import { h, ref, onMounted, watch, computed, nextTick } from 'vue'
+import { useRoute, useRouter } from 'vitepress'
 import DefaultTheme from 'vitepress/theme'
 import HomePortal from './components/HomePortal.vue'
 import './custom.css'
 
 export default {
   extends: DefaultTheme,
-  enhanceApp({ app }) {
+  enhanceApp({ app, router }) {
     // 注册自定义组件
     app.component('HomePortal', HomePortal)
+
+    // 实现 View Transitions 动画
+    if (typeof window !== 'undefined') {
+      router.onBeforeRouteChange = async () => {
+        if (!document.startViewTransition) return
+        await document.startViewTransition(async () => {
+          await nextTick()
+        }).ready
+      }
+    }
   },
   Layout: () => {
     const isCollapsed = ref(false)
