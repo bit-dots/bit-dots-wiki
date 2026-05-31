@@ -126,10 +126,7 @@
 .vp-doc h1 {
   font-size: 2.2em;
   margin-bottom: 32px;
-  background: linear-gradient(120deg, var(--vp-c-brand-1), var(--vp-c-brand-2));
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: var(--vp-c-brand-1);
 }
 
 /* 2. 精致化的自定义容器 (Cards Style) */
