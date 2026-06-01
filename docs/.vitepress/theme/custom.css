@@ -560,14 +560,31 @@ div[class*="language-"]::before {
 }
 .VPDocFooter .pager {
   display: flex;
-  justify-content: space-between;
+  flex-wrap: wrap; /* 允许换行 */
+  gap: 16px; /* 增加间距 */
 }
 .VPDocFooter .pager-link {
-  max-width: 46%;
+  flex: 1 1 45%; /* 弹性伸缩，基础宽度 45% */
+  min-width: 200px; /* 保证最小宽度，太窄时自动换行堆叠 */
   padding: 16px 20px !important;
   border-radius: 10px !important;
   border: 1px solid var(--vp-c-divider) !important;
   transition: all 0.25s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 当只有一项时，确保它不会占满全宽显得太突兀（可选） */
+.VPDocFooter .pager-link.next {
+  margin-left: auto;
+  text-align: right;
+  align-items: flex-end;
+}
+
+@media (max-width: 640px) {
+  .VPDocFooter .pager-link {
+    flex: 1 1 100%; /* 手机端占满全宽 */
+  }
 }
 .VPDocFooter .pager-link:hover {
   border-color: var(--vp-c-brand-1) !important;
