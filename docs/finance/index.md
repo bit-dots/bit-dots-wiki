@@ -26,13 +26,14 @@
 
 ---
 
-## 📚 投研空间 (Research Hub)
+## 💰 日富一日 (Daily Wealth)
 
 <div class="finance-grid">
 
 <div>
 
-### 📒 读书笔记
+### 📒 投研与心得
+- [x] [**《指数基金投资指南》- 核心摘要**](/finance/index-fund-guide)
 - [ ] 《聪明的投资者》- 安全边际
 - [ ] 《原则》- 债务周期模型
 - [ ] 《穷查理宝典》- 格栅思维

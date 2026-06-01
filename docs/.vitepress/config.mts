@@ -39,7 +39,13 @@ export default defineConfig({
           items: [
             { text: '板块首页', link: '/finance/' },
             { text: '每日热点', link: '/finance/daily-news' },
-            { text: '读书笔记', link: '/finance/reading-notes' },
+            {
+              text: '💰 日富一日',
+              collapsed: false,
+              items: [
+                { text: '指数基金投资指南', link: '/finance/index-fund-guide' }
+              ]
+            },
             { text: '形势判断', link: '/finance/market-analysis' }
           ]
         },
