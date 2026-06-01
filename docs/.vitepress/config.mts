@@ -25,7 +25,7 @@ export default defineConfig({
     nav: [
       { text: '🏠 首页', link: '/' },
       { text: '📝 笔记', link: '/intro' },
-      { text: '💹 金融', link: '/finance/' },
+      { text: '📈 复利', link: '/finance/' },
       { text: 'ℹ️ 关于', link: '/about' }
     ],
 
@@ -34,7 +34,7 @@ export default defineConfig({
       // 当用户在 /finance/ 目录下时的专用侧边栏
       '/finance/': [
         {
-          text: '💹 金融洞察',
+          text: '📈 复利人生',
           collapsed: false,
           items: [
             { text: '板块首页', link: '/finance/' },
