@@ -117,20 +117,33 @@
   color: #ffffff !important;
 }
 
-/* 8. 全局宽页模式 — 所有内容页面默认加宽，更合理利用屏幕空间 */
+/* 8. 全局宽页模式 — 优化内容宽度，兼顾阅读体验与大屏利用 */
 @media (min-width: 960px) {
   .VPDoc .container {
-    max-width: 100% !important;
+    max-width: 1280px !important; /* 限制最大宽度，防止在大屏上太散 */
+    margin: 0 auto;
+    padding: 0 40px !important; /* 增加大屏下的两侧留白 */
   }
   .VPDoc .content {
     max-width: 100% !important;
   }
   .VPDoc .content-container {
-    max-width: 80% !important;
+    max-width: 960px !important; /* 增加正文区宽度，但保持在舒适范围内 */
   }
   /* 确保右侧大纲始终可见 */
   .VPDoc .aside {
     display: block !important;
+  }
+}
+
+/* 针对门户页面（如复利人生）的特殊间距优化 */
+.is-sidebar-collapsed .VPDoc .container {
+  padding: 0 64px !important; /* 在全宽门户模式下增加更多呼吸感 */
+}
+
+@media (max-width: 960px) {
+  .VPDoc .container {
+    padding: 0 24px !important; /* 手机端保留合适的留白 */
   }
 }
 

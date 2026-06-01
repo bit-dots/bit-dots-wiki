@@ -1,8 +1,9 @@
 import { h, ref, onMounted, watch, computed, nextTick } from 'vue'
-import { useRoute, useRouter } from 'vitepress'
+import { useRoute, useRouter, useData } from 'vitepress'
 import DefaultTheme from 'vitepress/theme'
 import HomePortal from './components/HomePortal.vue'
 import AboutPage from './components/AboutPage.vue'
+import PageMeta from './components/PageMeta.vue'
 import './custom.css'
 
 export default {
@@ -11,6 +12,7 @@ export default {
     // 注册自定义组件
     app.component('HomePortal', HomePortal)
     app.component('AboutPage', AboutPage)
+    app.component('PageMeta', PageMeta)
 
     // 实现 View Transitions 动画
     if (typeof window !== 'undefined') {
@@ -25,15 +27,18 @@ export default {
   Layout: () => {
     const isCollapsed = ref(false)
     const isAsideCollapsed = ref(false)
+    const { frontmatter } = useData()
     const route = useRoute()
 
-    // 判断当前页面是否有侧边栏（非首页 & 非纯自定义布局页）
+    // 判断当前页面是否有侧边栏配置
     const hasSidebar = computed(() => {
+      if (frontmatter.value.sidebar === false) return false
       return route.path !== '/' && !route.path.includes('about')
     })
 
-    // 判断当前页面是否有大纲
+    // 判断当前页面是否有大纲配置
     const hasAside = computed(() => {
+      if (frontmatter.value.aside === false) return false
       return route.path !== '/' && !route.path.includes('about')
     })
 
@@ -69,29 +74,57 @@ export default {
       }, { passive: true })
     })
 
-    watch(isCollapsed, (val) => {
-      if (typeof document !== 'undefined') {
-        if (val) {
-          document.documentElement.classList.add('is-sidebar-collapsed')
-          localStorage.setItem('sidebar-collapsed', 'true')
-        } else {
-          document.documentElement.classList.remove('is-sidebar-collapsed')
-          localStorage.setItem('sidebar-collapsed', 'false')
-        }
+    // 统一同步 HTML 类名的函数
+    const updateLayoutClasses = () => {
+      if (typeof document === 'undefined') return
+      
+      const html = document.documentElement
+      
+      // 侧边栏逻辑：如果页面没侧边栏，或者处于折叠状态，则添加折叠类名
+      if (!hasSidebar.value || isCollapsed.value) {
+        html.classList.add('is-sidebar-collapsed')
+      } else {
+        html.classList.remove('is-sidebar-collapsed')
       }
-    }, { immediate: true })
 
-    watch(isAsideCollapsed, (val) => {
-      if (typeof document !== 'undefined') {
-        if (val) {
-          document.documentElement.classList.add('is-aside-collapsed')
-          localStorage.setItem('aside-collapsed', 'true')
-        } else {
-          document.documentElement.classList.remove('is-aside-collapsed')
-          localStorage.setItem('aside-collapsed', 'false')
-        }
+      // 大纲逻辑：如果页面没大纲，或者处于折叠状态，则添加折叠类名
+      if (!hasAside.value || isAsideCollapsed.value) {
+        html.classList.add('is-aside-collapsed')
+      } else {
+        html.classList.remove('is-aside-collapsed')
       }
-    }, { immediate: true })
+    }
+
+    // 监听状态和路由的变化
+    watch([isCollapsed, isAsideCollapsed, route], () => {
+      updateLayoutClasses()
+      
+      // 仅当用户在具有相应组件的页面手动点击时，才持久化偏好
+      if (hasSidebar.value) localStorage.setItem('sidebar-collapsed', String(isCollapsed.value))
+      if (hasAside.value) localStorage.setItem('aside-collapsed', String(isAsideCollapsed.value))
+    })
+
+    // 初次挂载同步
+    onMounted(() => {
+      const savedSidebar = localStorage.getItem('sidebar-collapsed')
+      const savedAside = localStorage.getItem('aside-collapsed')
+      
+      // 初始化状态
+      if (route.path !== '/' && !route.path.includes('about')) {
+        isCollapsed.value = savedSidebar === null ? true : savedSidebar === 'true'
+        isAsideCollapsed.value = savedAside === null ? true : savedAside === 'true'
+      } else {
+        isCollapsed.value = savedSidebar === 'true'
+        isAsideCollapsed.value = savedAside === 'true'
+      }
+
+      updateLayoutClasses()
+
+      // 监听滚动以控制回到顶部按钮显隐
+      window.addEventListener('scroll', () => {
+        showBackToTop.value = window.scrollY > 400
+      }, { passive: true })
+    })
 
     // 图标组件
     const SidebarIcon = () => h('svg', { viewBox: '0 0 24 24', width: '18', height: '18', fill: 'none', stroke: 'currentColor', 'stroke-width': '2' }, [
@@ -135,7 +168,10 @@ export default {
         class: showBackToTop.value ? 'back-to-top visible' : 'back-to-top',
         title: '回到顶部',
         onClick: () => window.scrollTo({ top: 0, behavior: 'smooth' })
-      }, [BackToTopIcon()])
+      }, [BackToTopIcon()]),
+
+      // ── 文章顶部元信息 ──
+      'doc-before': () => h(PageMeta)
     })
   }
 }
