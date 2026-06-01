@@ -35,10 +35,9 @@ export default defineConfig({
       '/finance/': [
         {
           text: '📈 复利人生',
-          collapsed: false,
           items: [
-            { text: '板块首页', link: '/finance/' },
-            { text: '每日热点', link: '/finance/daily-news' },
+            { text: '🏠 板块首页', link: '/finance/' },
+            { text: '📰 每日热点', link: '/finance/daily-news' },
             {
               text: '💰 日富一日',
               collapsed: false,
@@ -46,14 +45,7 @@ export default defineConfig({
                 { text: '指数基金投资指南', link: '/finance/index-fund-guide' }
               ]
             },
-            { text: '形势判断', link: '/finance/market-analysis' }
-          ]
-        },
-        {
-          text: '🏠 返回主站',
-          items: [
-            { text: '知识导读', link: '/intro' },
-            { text: '回到首页', link: '/' }
+            { text: '⚖️ 形势判断', link: '/finance/market-analysis' }
           ]
         }
       ],
