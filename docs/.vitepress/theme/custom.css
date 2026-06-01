@@ -24,57 +24,36 @@
 
 /* 导航栏背景适配 - 确保全宽透明与毛玻璃效果一致 */
 .VPNav {
-  --vp-nav-bg-color: rgba(255, 255, 255, 0.7) !important;
-  backdrop-filter: blur(16px);
+  --vp-nav-bg-color: rgba(255, 255, 255, 0.8) !important;
+  z-index: var(--vp-z-index-nav) !important;
 }
 
 .dark .VPNav {
-  --vp-nav-bg-color: rgba(27, 27, 31, 0.7) !important;
+  --vp-nav-bg-color: rgba(27, 27, 31, 0.8) !important;
 }
 
-/* 解决收起侧边栏后，Logo 区域可能出现的背景不一致或不模糊问题 */
+/* 导航栏主体：应用毛玻璃 */
 .VPNavBar {
+  background-color: var(--vp-nav-bg-color) !important;
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--vp-c-divider);
+}
+
+/* 确保内部容器透明，让 NavBar 的毛玻璃透出来 */
+.VPNavBarTitle, .VPNavBarMenu {
   background-color: transparent !important;
-  backdrop-filter: blur(16px) !important;
 }
 
-/* 确保 Logo 所在的 Title 区域不携带额外背景 */
-.VPNavBarTitle {
+/* 移动端菜单弹窗适配 */
+.VPNavScreen {
+  background-color: var(--vp-nav-bg-color) !important;
+  backdrop-filter: blur(24px);
+  z-index: calc(var(--vp-z-index-nav) + 10) !important;
+}
+
+/* 确保移动端菜单内的内容也是可见的 */
+.VPNavScreen .container {
   background-color: transparent !important;
-}
-
-/* 
-  响应式导航调整：
-  让平板及以上设备 (>768px) 使用桌面级文字导航，
-  仅在手机端 (<768px) 使用汉堡包菜单。
-*/
-
-@media (min-width: 768px) {
-  /* 在平板及以上宽度，强制显示桌面菜单，隐藏汉堡包按钮 */
-  .VPNavBarMenu {
-    display: flex !important;
-  }
-  .VPNavBarHamburger {
-    display: none !important;
-  }
-  .VPNavScreen {
-    display: none !important;
-  }
-}
-
-@media (max-width: 767px) {
-  /* 在手机端，强制显示汉堡包按钮，隐藏桌面菜单 */
-  .VPNavBarHamburger {
-    display: flex !important;
-    z-index: 100 !important;
-  }
-  .VPNavBarMenu {
-    display: none !important;
-  }
-  .VPNavScreen {
-    background-color: var(--vp-c-bg) !important;
-    z-index: 200 !important;
-  }
 }
 
 /* 文字阅读感优化 */
