@@ -5,6 +5,9 @@ node_modules/
 docs/.vitepress/dist
 docs/.vitepress/cache
 
+# Astro
+.astro/
+
 # Logs
 logs
 *.log
@@ -30,3 +33,4 @@ Thumbs.db
 test/
 log/
 azure-functions/
+dist/
