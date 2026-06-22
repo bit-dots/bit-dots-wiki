@@ -5,10 +5,7 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
-    "preview": "astro preview",
-    "docs:dev": "vitepress dev docs",
-    "docs:build": "vitepress build docs",
-    "docs:preview": "vitepress preview docs"
+    "preview": "astro preview"
   },
   "keywords": [],
   "author": "",
@@ -18,7 +15,6 @@
   "devDependencies": {
     "@astrojs/vue": "^7.0.0",
     "astro": "^7.0.0",
-    "vitepress": "^1.6.4",
     "vue": "^3.5.38"
   }
 }
