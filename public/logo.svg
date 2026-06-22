@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Bit-Dots Logo: 优化后的极简科技猫 -->
+  
+  <!-- 猫咪头部轮廓：增加奶白填充色，确保深色背景可见 -->
+  <path d="M20,40 L35,20 L50,35 L65,20 L80,40 L80,75 Q80,85 70,85 L30,85 Q20,85 20,75 Z" 
+        fill="#fdfbf7" />
+  
+  <path d="M20,40 L35,20 L50,35 L65,20 L80,40 L80,75 Q80,85 70,85 L30,85 Q20,85 20,75 Z" 
+        fill="none" stroke="#1d3557" stroke-width="3" stroke-linejoin="round" />
+
+  <!-- 左眼：深蓝色，大小统一 -->
+  <circle cx="35" cy="55" r="7" fill="#1d3557" />
+
+  <!-- 右眼：眨眼 (Wink)，颜色与左眼一致 -->
+  <path d="M60,55 Q65,62 72,55" fill="none" stroke="#1d3557" stroke-width="3" stroke-linecap="round" />
+
+  <!-- 鼻子 -->
+  <rect x="46" y="65" width="8" height="8" rx="2" fill="#1d3557" />
+
+  <!-- 增加胡须：每侧 3 根，加粗加深 -->
+  <line x1="8" y1="52" x2="22" y2="56" stroke="#1d3557" stroke-width="1.2" stroke-linecap="round" />
+  <line x1="6" y1="62" x2="20" y2="62" stroke="#1d3557" stroke-width="1.2" stroke-linecap="round" />
+  <line x1="8" y1="72" x2="22" y2="68" stroke="#1d3557" stroke-width="1.2" stroke-linecap="round" />
+  
+  <line x1="92" y1="52" x2="78" y2="56" stroke="#1d3557" stroke-width="1.2" stroke-linecap="round" />
+  <line x1="94" y1="62" x2="80" y2="62" stroke="#1d3557" stroke-width="1.2" stroke-linecap="round" />
+  <line x1="92" y1="72" x2="78" y2="68" stroke="#1d3557" stroke-width="1.2" stroke-linecap="round" />
+</svg>
