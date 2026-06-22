@@ -1,0 +1,205 @@
+:root {
+  /* 基础配色 - 浅色模式 */
+  --vp-c-bg: #ffffff;
+  --vp-c-bg-soft: #f6f6f7;
+  --vp-c-bg-mute: #f1f1f2;
+  --vp-c-text-1: #2b2d42;
+  --vp-c-text-2: #8d99ae;
+  --vp-c-divider: rgba(60, 60, 67, 0.12);
+  
+  /* 品牌色 */
+  --vp-c-brand-1: #e63946;
+  --vp-c-brand-2: #1d3557;
+  --vp-c-brand-soft: rgba(230, 57, 70, 0.1);
+  
+  /* 布局与字体 */
+  --vp-font-family-base: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --max-width: 1200px;
+  
+  /* 辅助状态色 */
+  --c-info: #3498db;
+  --c-tip: #2ecc71;
+  --c-warning: #f1c40f;
+}
+
+/* 深色模式适配 */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --vp-c-bg: #1b1b1f;
+    --vp-c-bg-soft: #202024;
+    --vp-c-bg-mute: #2f2f32;
+    --vp-c-text-1: rgba(255, 255, 255, 0.87);
+    --vp-c-text-2: rgba(235, 235, 245, 0.6);
+    --vp-c-divider: rgba(84, 84, 88, 0.48);
+    --vp-c-brand-2: #457b9d;
+    --vp-c-brand-soft: rgba(230, 57, 70, 0.2);
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: var(--vp-font-family-base);
+  background-color: var(--vp-c-bg);
+  color: var(--vp-c-text-1);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+a {
+  color: var(--vp-c-brand-1);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+a:hover {
+  color: var(--vp-c-brand-2);
+}
+
+/* 文章内容区域样式适配 (类似 VitePress 的 .vp-doc) */
+.content-doc {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 40px 24px;
+}
+
+.content-doc h1 {
+  font-size: 2.2rem;
+  font-weight: 800;
+  margin-bottom: 24px;
+  letter-spacing: -0.02em;
+}
+
+.content-doc h2 {
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin-top: 36px;
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--vp-c-divider);
+}
+
+.content-doc h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-top: 28px;
+  margin-bottom: 12px;
+}
+
+.content-doc p {
+  line-height: 1.8;
+  margin: 16px 0;
+  color: var(--vp-c-text-1);
+}
+
+.content-doc ul, .content-doc ol {
+  padding-left: 24px;
+  margin: 16px 0;
+}
+
+.content-doc li {
+  margin: 8px 0;
+  line-height: 1.8;
+}
+
+.content-doc blockquote {
+  margin: 24px 0;
+  padding: 0 16px;
+  border-left: 4px solid var(--vp-c-brand-1);
+  color: var(--vp-c-text-2);
+  font-style: italic;
+  background-color: var(--vp-c-bg-soft);
+  border-radius: 0 8px 8px 0;
+  padding: 12px 16px;
+}
+
+/* Mac 风格代码块 */
+.content-doc pre {
+  padding: 16px;
+  border-radius: 12px;
+  overflow-x: auto;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.9rem;
+  margin: 24px 0;
+  background-color: var(--vp-c-bg-soft) !important;
+  border: 1px solid var(--vp-c-divider);
+}
+
+.content-doc code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.85em;
+  background-color: var(--vp-c-bg-soft);
+  padding: 3px 6px;
+  border-radius: 4px;
+}
+
+.content-doc pre code {
+  background-color: transparent;
+  padding: 0;
+  font-size: inherit;
+  border-radius: 0;
+}
+
+/* 自定义块容器 (::: info / ::: tip / ::: warning) */
+.custom-block {
+  border-radius: 12px;
+  border-left: 4px solid transparent;
+  padding: 16px 20px;
+  margin: 24px 0;
+  background-color: var(--vp-c-bg-soft);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+}
+
+.custom-block .custom-block-title {
+  font-weight: 700;
+  margin-bottom: 8px;
+  font-size: 0.95rem;
+}
+
+.custom-block.info {
+  border-color: var(--c-info);
+}
+.custom-block.info .custom-block-title {
+  color: var(--c-info);
+}
+
+.custom-block.tip {
+  border-color: var(--c-tip);
+}
+.custom-block.tip .custom-block-title {
+  color: var(--c-tip);
+}
+
+.custom-block.warning {
+  border-color: var(--c-warning);
+}
+.custom-block.warning .custom-block-title {
+  color: var(--c-warning);
+}
+
+/* 徽章 (Badge) */
+.badge {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 6px;
+  vertical-align: middle;
+  margin-left: 6px;
+}
+.badge.tip {
+  background-color: var(--vp-c-brand-soft);
+  color: var(--vp-c-brand-1);
+}
+.badge.info {
+  background-color: rgba(52, 152, 219, 0.1);
+  color: var(--c-info);
+}
+.badge.warning {
+  background-color: rgba(241, 196, 15, 0.1);
+  color: var(--c-warning);
+}

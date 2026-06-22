@@ -1,0 +1,251 @@
+---
+// src/layouts/PostLayout.astro
+import BaseLayout from './BaseLayout.astro';
+import PageMeta from '../components/PageMeta.astro';
+
+interface Props {
+  title?: string;
+  description?: string;
+  headings?: { depth: number; slug: string; text: string }[];
+  currentPath: string;
+}
+
+const { title, description, headings = [], currentPath } = Astro.props;
+
+// 定义侧边栏结构
+const financeSidebar = {
+  title: "📈 复利人生",
+  items: [
+    { text: "🏠 板块首页", link: "/finance" },
+    { text: "📰 每日热点", link: "/finance/daily-news" },
+    { text: "指数基金投资指南", link: "/finance/index-fund-guide" },
+    { text: "⚖️ 形势判断", link: "/finance/market-analysis" }
+  ]
+};
+
+const defaultSidebar = [
+  {
+    title: "开始探索",
+    items: [
+      { text: "知识导读", link: "/intro" }
+    ]
+  },
+  {
+    title: "🚀 技术探索",
+    items: [
+      { text: "命名约定", link: "/tech/c-programming/naming-convention" }
+    ]
+  }
+];
+
+// 判断展示哪个侧边栏
+const isFinance = currentPath.startsWith('/finance');
+const sidebar = isFinance ? [financeSidebar] : defaultSidebar;
+
+// 过滤 H2/H3 用于右侧 TOC
+const tocHeadings = headings.filter(h => h.depth === 2 || h.depth === 3);
+
+// 简单判定当前激活的链接是否匹配
+const isActive = (link: string) => {
+  if (link === '/' && currentPath === '/') return true;
+  if (link !== '/') return currentPath.endsWith(link);
+  return false;
+};
+---
+
+<BaseLayout title={title} description={description}>
+  <div class="layout-container">
+    <!-- 左侧侧边栏 -->
+    <aside class="sidebar">
+      {sidebar.map(section => (
+        <div class="sidebar-section">
+          <h4 class="sidebar-title">{section.title}</h4>
+          <ul class="sidebar-list">
+            {section.items.map(item => (
+              <li>
+                <a 
+                  href={item.link} 
+                  class:list={[
+                    'sidebar-link', 
+                    { active: isActive(item.link) }
+                  ]}
+                >
+                  {item.text}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </aside>
+
+    <!-- 中间文章内容 -->
+    <main class="content-wrapper">
+      <article class="content-doc">
+        {title && <h1>{title}</h1>}
+        
+        <!-- 文章元信息 -->
+        <PageMeta currentPath={currentPath} />
+
+        <div class="markdown-body">
+          <slot />
+        </div>
+      </article>
+    </main>
+
+    <!-- 右侧大纲 (TOC) -->
+    {tocHeadings.length > 0 && (
+      <aside class="toc-aside">
+        <div class="toc-container">
+          <h5 class="toc-title">📑 页面导航</h5>
+          <ul class="toc-list">
+            {tocHeadings.map(h => (
+              <li class={`toc-item depth-${h.depth}`}>
+                <a href={`#${h.slug}`}>{h.text}</a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </aside>
+    )}
+  </div>
+</BaseLayout>
+
+<style>
+  .layout-container {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 260px 1fr 240px;
+    gap: 32px;
+    padding: 0 24px;
+    position: relative;
+  }
+
+  /* 响应式布局：没有大纲时 */
+  .layout-container:not(:has(.toc-aside)) {
+    grid-template-columns: 260px 1fr;
+  }
+
+  /* 左侧侧边栏 */
+  .sidebar {
+    position: sticky;
+    top: 80px;
+    height: calc(100vh - 100px);
+    overflow-y: auto;
+    padding: 24px 0;
+    border-right: 1px solid var(--vp-c-divider);
+  }
+
+  .sidebar-section {
+    margin-bottom: 24px;
+  }
+
+  .sidebar-title {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--vp-c-text-2);
+    margin: 0 0 12px 0;
+    font-weight: 700;
+  }
+
+  .sidebar-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .sidebar-list li {
+    margin-bottom: 4px;
+  }
+
+  .sidebar-link {
+    display: block;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    color: var(--vp-c-text-1);
+    transition: all 0.2s ease;
+  }
+
+  .sidebar-link:hover {
+    background-color: var(--vp-c-bg-soft);
+    color: var(--vp-c-brand-1);
+  }
+
+  .sidebar-link.active {
+    font-weight: 600;
+    background-color: var(--vp-c-brand-soft);
+    color: var(--vp-c-brand-1);
+  }
+
+  /* 中间内容区 */
+  .content-wrapper {
+    min-width: 0; /* 防止 code 元素撑开布局 */
+    padding: 24px 0 60px;
+  }
+
+  /* 右侧大纲 (TOC) */
+  .toc-aside {
+    position: sticky;
+    top: 80px;
+    height: calc(100vh - 100px);
+    overflow-y: auto;
+    padding: 24px 0;
+  }
+
+  .toc-container {
+    border-left: 1px solid var(--vp-c-divider);
+    padding-left: 16px;
+  }
+
+  .toc-title {
+    font-size: 0.85rem;
+    margin: 0 0 12px 0;
+    color: var(--vp-c-text-1);
+    font-weight: 700;
+  }
+
+  .toc-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .toc-item a {
+    font-size: 0.85rem;
+    color: var(--vp-c-text-2);
+    transition: color 0.15s ease;
+  }
+
+  .toc-item a:hover {
+    color: var(--vp-c-brand-1);
+  }
+
+  .toc-item.depth-3 {
+    padding-left: 12px;
+  }
+
+  /* 移动端适配 */
+  @media (max-width: 1024px) {
+    .layout-container {
+      grid-template-columns: 220px 1fr;
+    }
+    .toc-aside {
+      display: none;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .layout-container {
+      grid-template-columns: 1fr;
+    }
+    .sidebar {
+      display: none; /* 简易起见，移动端先隐藏侧边栏 */
+    }
+  }
+</style>

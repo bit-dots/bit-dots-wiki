@@ -1,0 +1,178 @@
+---
+// src/layouts/BaseLayout.astro
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { 
+  title = "Bit-Dots - 极简个人知识 Wiki", 
+  description = "点滴成海，记录万物。一个极简、纯粹、高颜值的个人知识空间。" 
+} = Astro.props;
+
+const currentYear = new Date().getFullYear();
+---
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/logo.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="keywords" content="Bit-Dots, Wiki, 知识库, 个人博客, 极简设计, Astro" />
+    <meta name="author" content="Bit-Dots" />
+    <meta name="description" content={description} />
+    
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:site_name" content="Bit-Dots" />
+    
+    <title>{title}</title>
+  </head>
+  <body>
+    <!-- 头部导航栏 -->
+    <header class="navbar">
+      <div class="navbar-container">
+        <a href="/" class="logo-link">
+          <img src="/logo.svg" alt="Bit-Dots Logo" class="logo-img" />
+          <span class="site-name">Bit-Dots</span>
+        </a>
+        <nav class="nav-links">
+          <a href="/">🏠 首页</a>
+          <a href="/intro">📝 笔记</a>
+          <a href="/finance">📈 复利</a>
+          <a href="/about">ℹ️ 关于</a>
+        </nav>
+      </div>
+    </header>
+
+    <!-- 页面主体容器 -->
+    <div class="main-wrapper">
+      <slot />
+    </div>
+
+    <!-- 全局页脚 -->
+    <footer class="footer">
+      <div class="footer-container">
+        <p class="license">
+          本站内容采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 知识共享协议
+        </p>
+        <p class="copyright">
+          Copyright © 2026-{currentYear} Bit-Dots
+        </p>
+      </div>
+    </footer>
+  </body>
+</html>
+
+<style>
+  /* 导航栏样式 */
+  .navbar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    width: 100%;
+    height: 64px;
+    background-color: rgba(var(--navbar-bg-rgb, 255, 255, 255), 0.8);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--vp-c-divider);
+    display: flex;
+    align-items: center;
+    transition: background-color 0.3s, border-color 0.3s;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .navbar {
+      background-color: rgba(27, 27, 31, 0.8);
+    }
+  }
+
+  .navbar-container {
+    max-width: var(--max-width);
+    width: 100%;
+    margin: 0 auto;
+    padding: 0 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .logo-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 700;
+    font-size: 1.2rem;
+    color: var(--vp-c-text-1);
+  }
+
+  .logo-img {
+    width: 32px;
+    height: 32px;
+    filter: drop-shadow(0 2px 4px rgba(230, 57, 70, 0.15));
+  }
+
+  .site-name {
+    letter-spacing: -0.5px;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 24px;
+  }
+
+  .nav-links a {
+    color: var(--vp-c-text-1);
+    font-size: 0.95rem;
+    font-weight: 500;
+    padding: 6px 4px;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s ease;
+  }
+
+  .nav-links a:hover {
+    color: var(--vp-c-brand-1);
+    border-bottom-color: var(--vp-c-brand-1);
+  }
+
+  /* 主体区域 */
+  .main-wrapper {
+    min-height: calc(100vh - 64px - 120px); /* 减去 Header 和 Footer 高度 */
+  }
+
+  /* 页脚样式 */
+  .footer {
+    height: 120px;
+    border-top: 1px solid var(--vp-c-divider);
+    background-color: var(--vp-c-bg-soft);
+    display: flex;
+    align-items: center;
+    font-size: 0.85rem;
+    color: var(--vp-c-text-2);
+    text-align: center;
+  }
+
+  .footer-container {
+    max-width: var(--max-width);
+    width: 100%;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  .footer p {
+    margin: 6px 0;
+  }
+
+  .license a {
+    text-decoration: underline;
+    color: var(--vp-c-text-2);
+  }
+
+  .license a:hover {
+    color: var(--vp-c-brand-1);
+  }
+</style>

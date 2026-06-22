@@ -1,0 +1,80 @@
+---
+// src/components/PageMeta.astro
+interface Props {
+  date?: string;
+  category?: string;
+  currentPath?: string;
+}
+
+const { date, category, currentPath } = Astro.props;
+
+// 根据路径或显式声明来推断展示分类
+let displayCategory = category;
+if (!displayCategory && currentPath) {
+  if (currentPath.includes('/finance')) {
+    displayCategory = '复利人生';
+  } else if (currentPath.includes('/tech')) {
+    displayCategory = '技术探索';
+  }
+}
+
+// 格式化日期展示
+let displayDate = "";
+if (date) {
+  displayDate = new Date(date).toLocaleDateString('zh-CN', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
+}
+---
+
+{(displayDate || displayCategory) && (
+  <div class="page-meta">
+    {displayDate && (
+      <div class="meta-item date">
+        <span class="icon">🕒</span>
+        <span class="text">{displayDate}</span>
+      </div>
+    )}
+    {displayCategory && (
+      <div class="meta-item category">
+        <span class="icon">📁</span>
+        <span class="text">{displayCategory}</span>
+      </div>
+    )}
+  </div>
+)}
+
+<style>
+  .page-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin: 16px 0 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--vp-c-divider);
+    font-size: 0.85rem;
+    color: var(--vp-c-text-2);
+  }
+
+  .meta-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .meta-item .icon {
+    opacity: 0.8;
+  }
+
+  .meta-item .text {
+    font-weight: 500;
+  }
+
+  @media (max-width: 640px) {
+    .page-meta {
+      gap: 12px;
+    }
+  }
+</style>
