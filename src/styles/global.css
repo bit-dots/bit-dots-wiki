@@ -227,3 +227,45 @@ a:hover {
   background-color: rgba(241, 196, 15, 0.1);
   color: var(--c-warning);
 }
+
+/* ============================================
+   Astro View Transitions — 页面切换动画
+   ============================================ */
+@view-transition {
+  navigation: auto;
+}
+
+/* 旧页面：淡出 + 轻微上移 */
+::view-transition-old(root) {
+  animation: vt-fade-out 0.25s cubic-bezier(0.4, 0, 0.2, 1) both,
+             vt-slide-up 0.25s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+/* 新页面：淡入 + 轻微上移 */
+::view-transition-new(root) {
+  animation: vt-fade-in 0.35s cubic-bezier(0.4, 0, 0.2, 1) both,
+             vt-slide-up 0.35s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+/* 减少动画偏好时禁用过渡 */
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none;
+  }
+}
+
+@keyframes vt-fade-out {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+
+@keyframes vt-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes vt-slide-up {
+  from { transform: translateY(12px); }
+  to   { transform: translateY(0); }
+}
