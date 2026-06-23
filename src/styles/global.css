@@ -149,7 +149,7 @@ a:hover {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   font-size: 0.9rem;
   margin: 24px 0;
-  background-color: var(--vp-c-bg-soft) !important;
+  background-color: var(--vp-c-bg-soft);
   border: 1px solid var(--vp-c-divider);
 }
 
