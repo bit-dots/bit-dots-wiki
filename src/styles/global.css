@@ -22,7 +22,7 @@
   --c-warning: #f1c40f;
 }
 
-/* 深色模式适配 */
+/* 深色模式适配（跟随系统） */
 @media (prefers-color-scheme: dark) {
   :root {
     --vp-c-bg: #1b1b1f;
@@ -34,6 +34,30 @@
     --vp-c-brand-2: #457b9d;
     --vp-c-brand-soft: rgba(230, 57, 70, 0.2);
   }
+}
+
+/* 手动深色模式（覆盖系统偏好） */
+:root[data-theme="dark"] {
+  --vp-c-bg: #1b1b1f;
+  --vp-c-bg-soft: #202024;
+  --vp-c-bg-mute: #2f2f32;
+  --vp-c-text-1: rgba(255, 255, 255, 0.87);
+  --vp-c-text-2: rgba(235, 235, 245, 0.6);
+  --vp-c-divider: rgba(84, 84, 88, 0.48);
+  --vp-c-brand-2: #457b9d;
+  --vp-c-brand-soft: rgba(230, 57, 70, 0.2);
+}
+
+/* 手动浅色模式（覆盖系统深色偏好） */
+:root[data-theme="light"] {
+  --vp-c-bg: #ffffff;
+  --vp-c-bg-soft: #f6f6f7;
+  --vp-c-bg-mute: #f1f1f2;
+  --vp-c-text-1: #2b2d42;
+  --vp-c-text-2: #8d99ae;
+  --vp-c-divider: rgba(60, 60, 67, 0.12);
+  --vp-c-brand-2: #1d3557;
+  --vp-c-brand-soft: rgba(230, 57, 70, 0.1);
 }
 
 * {

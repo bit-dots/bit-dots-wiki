@@ -2,202 +2,190 @@
 // src/components/AboutPage.astro
 ---
 
-<div class="about-container">
-  <header class="about-header">
+<div class="about">
+  <!-- Hero -->
+  <header class="about-hero">
+    <div class="hero-glow"></div>
     <img src="/logo.svg" alt="Bit-Dots Logo" class="about-logo" />
     <h1 class="about-title">关于 Bit-Dots</h1>
     <p class="about-tagline">点滴成海，记录万物</p>
   </header>
 
-  <section class="about-content">
-    <p class="intro-text">
+  <!-- 简介 -->
+  <section class="about-intro">
+    <p>
       Bit-Dots 是一个极简、纯粹的个人知识空间。它不仅是知识的归档处，更是思维的延伸与数字花园。
-      在这里，每一篇笔记都是一颗“点”（Dot），持续的积累最终会连点成线，汇聚成海。
+      在这里，每一篇笔记都是一颗"点"（Dot），持续的积累最终会连点成线，汇聚成海。
     </p>
+  </section>
 
-    <div class="philosophy-grid">
-      <div class="philosophy-card">
-        <h3>🎨 极简</h3>
-        <p>去除一切不必要的干扰，让内容成为唯一的焦点。</p>
-      </div>
-      <div class="philosophy-card">
-        <h3>🌱 持续</h3>
-        <p>记录每一个闪光的灵感，见证认知的迭代与生长。</p>
-      </div>
-      <div class="philosophy-card">
-        <h3>💬 纯粹</h3>
-        <p>回归 Markdown 最原始的快感，维持深度的对话。</p>
-      </div>
+  <!-- 理念卡片 -->
+  <section class="philosophy">
+    <div class="phil-card">
+      <div class="phil-icon">🎨</div>
+      <h3>极简</h3>
+      <p>去除一切不必要的干扰，让内容成为唯一的焦点。</p>
     </div>
-
-    <div class="tech-stack">
-      <h2>🛠️ 技术实现</h2>
-      <ul>
-        <li><strong>驱动引擎</strong>: <a href="https://astro.build/" target="_blank">Astro</a> (已从 VitePress 顺利重构)</li>
-        <li><strong>部署平台</strong>: <a href="https://pages.cloudflare.com/" target="_blank">Cloudflare Pages</a></li>
-        <li><strong>开源地址</strong>: <a href="https://github.com/bit-dots/bit-dots-wiki" target="_blank">GitHub Repository</a></li>
-      </ul>
+    <div class="phil-card">
+      <div class="phil-icon">🌱</div>
+      <h3>持续</h3>
+      <p>记录每一个闪光的灵感，见证认知的迭代与生长。</p>
     </div>
+    <div class="phil-card">
+      <div class="phil-icon">💬</div>
+      <h3>纯粹</h3>
+      <p>回归 Markdown 最原始的快感，维持深度的对话。</p>
+    </div>
+  </section>
 
-    <div class="contact-section">
-      <h2>📬 找到我</h2>
-      <div class="social-links">
-        <a href="https://github.com/bit-dots" target="_blank" class="social-btn">GitHub</a>
-        <span class="social-btn disabled">Email: 暂不对外开放</span>
+  <!-- 技术栈 -->
+  <section class="tech-section">
+    <h2>🛠️ 技术实现</h2>
+    <div class="tech-grid">
+      <div class="tech-item">
+        <span class="tech-label">驱动引擎</span>
+        <a href="https://astro.build/" target="_blank" class="tech-value">Astro</a>
+      </div>
+      <div class="tech-item">
+        <span class="tech-label">部署平台</span>
+        <a href="https://pages.cloudflare.com/" target="_blank" class="tech-value">Cloudflare Pages</a>
+      </div>
+      <div class="tech-item">
+        <span class="tech-label">源代码</span>
+        <a href="https://github.com/bit-dots/bit-dots-wiki" target="_blank" class="tech-value">GitHub</a>
       </div>
     </div>
   </section>
 
-  <footer class="about-quote">
+  <!-- 联系方式 -->
+  <section class="contact-section">
+    <h2>📬 找到我</h2>
+    <div class="contact-grid">
+      <a href="https://github.com/bit-dots" target="_blank" class="contact-card">
+        <span class="contact-icon">🐙</span>
+        <span>GitHub</span>
+      </a>
+      <div class="contact-card contact-disabled">
+        <span class="contact-icon">✉️</span>
+        <span>Email · 暂不开放</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 底部引言 -->
+  <footer class="about-footer">
     <blockquote>"The dots will somehow connect in your future." — Steve Jobs</blockquote>
   </footer>
 </div>
 
 <style>
-  .about-container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 60px 24px;
+  .about {
+    max-width: 800px; margin: 0 auto; padding: 0 24px 80px;
   }
 
-  .about-header {
-    text-align: center;
-    margin-bottom: 60px;
+  /* Hero */
+  .about-hero {
+    text-align: center; padding: 80px 0 50px;
+    position: relative; overflow: hidden;
   }
-
+  .hero-glow {
+    position: absolute; top: -30%; left: 50%; transform: translateX(-50%);
+    width: 500px; height: 500px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(230,57,70,.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
   .about-logo {
-    width: 80px;
-    height: 80px;
-    margin: 0 auto 24px;
-    filter: drop-shadow(0 4px 12px rgba(230, 57, 70, 0.2));
+    width: 72px; height: 72px; margin-bottom: 24px;
+    filter: drop-shadow(0 4px 14px rgba(230,57,70,.18));
+    animation: float 4s ease-in-out infinite;
   }
-
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
   .about-title {
-    font-size: 2.5rem;
-    font-weight: 800;
-    margin-bottom: 8px;
+    font-size: 2.8rem; font-weight: 800; margin: 0 0 10px;
     background: linear-gradient(135deg, var(--vp-c-brand-1) 0%, #1d3557 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .about-tagline { font-size: 1.15rem; color: var(--vp-c-text-2); margin: 0; }
+
+  /* 简介 */
+  .about-intro {
+    text-align: center; margin-bottom: 56px;
+  }
+  .about-intro p {
+    font-size: 1.1rem; line-height: 1.85; color: var(--vp-c-text-1);
+    max-width: 640px; margin: 0 auto;
   }
 
-  .about-tagline {
-    font-size: 1.2rem;
-    color: var(--vp-c-text-2);
+  /* 理念卡片 */
+  .philosophy {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
+    margin-bottom: 64px;
   }
-
-  .intro-text {
-    font-size: 1.15rem;
-    line-height: 1.8;
-    color: var(--vp-c-text-1);
-    text-align: center;
-    margin-bottom: 48px;
+  .phil-card {
+    padding: 28px; text-align: center;
+    background: var(--vp-c-bg-soft); border: 1px solid var(--vp-c-divider);
+    border-radius: 18px;
+    transition: all .3s ease;
   }
-
-  .philosophy-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 24px;
-    margin-bottom: 60px;
+  .phil-card:hover {
+    transform: translateY(-6px); border-color: var(--vp-c-brand-1);
+    box-shadow: 0 10px 28px rgba(0,0,0,.05);
   }
-
-  .philosophy-card {
-    padding: 24px;
-    background: var(--vp-c-bg-soft);
-    border-radius: 16px;
-    border: 1px solid var(--vp-c-divider);
-    transition: all 0.3s ease;
-  }
-
-  .philosophy-card:hover {
-    transform: translateY(-5px);
-    border-color: var(--vp-c-brand-1);
-    box-shadow: 0 8px 24px rgba(0,0,0,0.05);
-  }
-
-  .philosophy-card h3 {
-    margin-top: 0;
-    font-size: 1.1rem;
+  .phil-icon { font-size: 2rem; margin-bottom: 14px; }
+  .phil-card h3 {
+    font-size: 1.1rem; font-weight: 700; margin: 0 0 8px;
     color: var(--vp-c-brand-1);
-    font-weight: 700;
   }
+  .phil-card p { font-size: .88rem; color: var(--vp-c-text-2); margin: 0; line-height: 1.6; }
 
-  .philosophy-card p {
-    font-size: 0.9rem;
-    color: var(--vp-c-text-2);
-    margin-bottom: 0;
+  /* 技术栈 */
+  .tech-section { margin-bottom: 56px; }
+  .tech-section h2 { font-size: 1.4rem; font-weight: 700; margin: 0 0 20px; border: none; }
+  .tech-grid { display: flex; flex-direction: column; gap: 12px; }
+  .tech-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 14px 20px; border-radius: 12px;
+    background: var(--vp-c-bg-soft); border: 1px solid var(--vp-c-divider);
+    transition: border-color .2s;
   }
+  .tech-item:hover { border-color: var(--vp-c-brand-1); }
+  .tech-label { font-size: .85rem; font-weight: 600; color: var(--vp-c-text-2); min-width: 80px; }
+  .tech-value { font-weight: 600; color: var(--vp-c-brand-1); }
 
-  .tech-stack, .contact-section {
-    margin-bottom: 48px;
+  /* 联系方式 */
+  .contact-section { margin-bottom: 64px; }
+  .contact-section h2 { font-size: 1.4rem; font-weight: 700; margin: 0 0 20px; border: none; }
+  .contact-grid { display: flex; gap: 14px; }
+  .contact-card {
+    display: flex; align-items: center; gap: 10px;
+    padding: 12px 24px; border-radius: 12px;
+    background: var(--vp-c-bg-soft); border: 1px solid var(--vp-c-divider);
+    font-size: .9rem; font-weight: 500; color: var(--vp-c-text-1);
+    transition: all .25s;
   }
-
-  h2 {
-    font-size: 1.5rem;
-    border: none;
-    margin-bottom: 24px;
-    font-weight: 700;
+  a.contact-card:hover {
+    border-color: var(--vp-c-brand-1); color: var(--vp-c-brand-1);
+    transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,.05);
   }
+  .contact-disabled { opacity: .5; cursor: not-allowed; }
+  .contact-icon { font-size: 1.2rem; }
 
-  ul {
-    list-style: none;
-    padding: 0;
+  /* 底部 */
+  .about-footer {
+    text-align: center; padding-top: 40px;
+    border-top: 1px solid var(--vp-c-divider);
   }
-
-  li {
-    margin-bottom: 12px;
-    padding-left: 20px;
-    position: relative;
-  }
-
-  li::before {
-    content: "•";
-    color: var(--vp-c-brand-1);
-    position: absolute;
-    left: 0;
-    font-weight: bold;
-  }
-
-  .social-links {
-    display: flex;
-    gap: 16px;
-  }
-
-  .social-btn {
-    padding: 8px 24px;
-    border-radius: 8px;
-    background: var(--vp-c-bg-soft);
-    border: 1px solid var(--vp-c-divider);
-    text-decoration: none !important;
-    color: var(--vp-c-text-1) !important;
-    font-size: 0.9rem;
-    transition: all 0.2s;
-  }
-
-  .social-btn:hover:not(.disabled) {
-    background: var(--vp-c-brand-soft);
-    border-color: var(--vp-c-brand-1);
-    color: var(--vp-c-brand-1) !important;
-  }
-
-  .social-btn.disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-  }
-
-  .about-quote {
-    margin-top: 80px;
-    text-align: center;
-    opacity: 0.7;
-    font-style: italic;
+  .about-footer blockquote {
+    font-style: italic; color: var(--vp-c-text-2);
+    font-size: .95rem; border: none; background: none; padding: 0;
   }
 
   @media (max-width: 768px) {
-    .philosophy-grid {
-      grid-template-columns: 1fr;
-    }
-    .about-title {
-      font-size: 2rem;
-    }
+    .philosophy { grid-template-columns: 1fr; }
+    .about-title { font-size: 2.2rem; }
+    .contact-grid { flex-direction: column; }
   }
 </style>

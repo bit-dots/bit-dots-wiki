@@ -1,251 +1,336 @@
 ---
 // src/layouts/PostLayout.astro
 import BaseLayout from './BaseLayout.astro';
-import PageMeta from '../components/PageMeta.astro';
+import SEO from '../components/SEO.astro';
+import TableOfContents from '../components/TableOfContents.vue';
 
 interface Props {
   title?: string;
   description?: string;
   headings?: { depth: number; slug: string; text: string }[];
   currentPath: string;
+  relatedPosts?: { id: string; data: { title?: string; description?: string } }[];
+  pubDate?: Date;
+  updatedDate?: Date;
+  author?: string;
+  tags?: string[];
+  image?: string;
 }
 
-const { title, description, headings = [], currentPath } = Astro.props;
+const { 
+  title, 
+  description, 
+  headings = [], 
+  currentPath,
+  relatedPosts = [],
+  pubDate,
+  updatedDate,
+  author,
+  tags = [],
+  image
+} = Astro.props;
 
-// 定义侧边栏结构
-const financeSidebar = {
-  title: "📈 复利人生",
-  items: [
-    { text: "🏠 板块首页", link: "/finance" },
-    { text: "📰 每日热点", link: "/finance/daily-news" },
-    { text: "指数基金投资指南", link: "/finance/index-fund-guide" },
-    { text: "⚖️ 形势判断", link: "/finance/market-analysis" }
-  ]
-};
-
-const defaultSidebar = [
-  {
-    title: "开始探索",
-    items: [
-      { text: "知识导读", link: "/intro" }
-    ]
-  },
-  {
-    title: "🚀 技术探索",
-    items: [
-      { text: "命名约定", link: "/tech/c-programming/naming-convention" }
-    ]
-  }
-];
-
-// 判断展示哪个侧边栏
-const isFinance = currentPath.startsWith('/finance');
-const sidebar = isFinance ? [financeSidebar] : defaultSidebar;
-
-// 过滤 H2/H3 用于右侧 TOC
+// 过滤 h2/h3 用于大纲导航
 const tocHeadings = headings.filter(h => h.depth === 2 || h.depth === 3);
 
-// 简单判定当前激活的链接是否匹配
-const isActive = (link: string) => {
-  if (link === '/' && currentPath === '/') return true;
-  if (link !== '/') return currentPath.endsWith(link);
-  return false;
+// 根据路径推断分类标签
+const getCategoryLabel = (path: string) => {
+  if (path.includes('/finance')) return '📈 复利人生';
+  if (path.includes('/tech')) return '🚀 技术探索';
+  return '📝 笔记';
 };
+const categoryLabel = getCategoryLabel(currentPath);
+
+// 估算阅读时间（基于标题数量的粗略估算）
+const estimatedMinutes = Math.max(3, Math.ceil(headings.length * 1.5));
 ---
 
-<BaseLayout title={title} description={description}>
-  <div class="layout-container">
-    <!-- 左侧侧边栏 -->
-    <aside class="sidebar">
-      {sidebar.map(section => (
-        <div class="sidebar-section">
-          <h4 class="sidebar-title">{section.title}</h4>
-          <ul class="sidebar-list">
-            {section.items.map(item => (
-              <li>
-                <a 
-                  href={item.link} 
-                  class:list={[
-                    'sidebar-link', 
-                    { active: isActive(item.link) }
-                  ]}
-                >
-                  {item.text}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </div>
-      ))}
+<BaseLayout title={title ? `${title} - Bit-Dots` : 'Bit-Dots'} description={description}>
+  {title && (
+    <SEO 
+      title={title}
+      description={description || ''}
+      url={Astro.url.toString()}
+      type="article"
+      pubDate={pubDate}
+      updatedDate={updatedDate}
+      author={author}
+      tags={tags}
+      image={image}
+    />
+  )}
+  <!-- 阅读进度条 -->
+  <div class="progress-track">
+    <div class="progress-fill" id="reading-progress"></div>
+  </div>
+
+  <div class="post-layout">
+    <!-- 左侧悬浮操作条 -->
+    <aside class="action-rail">
+      <a href="javascript:history.back()" class="rail-btn" title="返回">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5m0 0l7 7m-7-7l7-7"/></svg>
+      </a>
+      <button class="rail-btn" id="btn-top" title="回到顶部">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19V5m0 0l-7 7m7-7l7 7"/></svg>
+      </button>
     </aside>
 
-    <!-- 中间文章内容 -->
-    <main class="content-wrapper">
-      <article class="content-doc">
-        {title && <h1>{title}</h1>}
-        
-        <!-- 文章元信息 -->
-        <PageMeta currentPath={currentPath} />
+    <!-- 主内容区 -->
+    <main class="post-main">
+      <article class="post-card">
+        <!-- 文章 Hero -->
+        <header class="post-hero">
+          <div class="hero-meta-row">
+            <span class="cat-pill">{categoryLabel}</span>
+            <span class="reading-time">⏱ 约 {estimatedMinutes} 分钟</span>
+          </div>
+          {title && <h1 class="post-title">{title}</h1>}
+          {description && <p class="post-desc">{description}</p>}
+        </header>
 
-        <div class="markdown-body">
+        <!-- Markdown 正文 -->
+        <div class="post-body content-doc">
           <slot />
         </div>
       </article>
+
+      <!-- 底部推荐 -->
+      {relatedPosts.length > 0 && (
+        <section class="related-section">
+          <h3 class="related-heading">📖 延伸阅读</h3>
+          <div class="related-grid">
+            {relatedPosts.map(post => {
+              let url = `/${post.id}`;
+              if (url.endsWith('/index')) url = url.replace(/\/index$/, '');
+              return (
+                <a href={url} class="related-card">
+                  <span class="rc-cat">{getCategoryLabel(url)}</span>
+                  <h4>{post.data.title || '无标题'}</h4>
+                  {post.data.description && <p>{post.data.description}</p>}
+                </a>
+              );
+            })}
+          </div>
+        </section>
+      )}
     </main>
 
-    <!-- 右侧大纲 (TOC) -->
+    <!-- 右侧大纲 -->
     {tocHeadings.length > 0 && (
-      <aside class="toc-aside">
-        <div class="toc-container">
-          <h5 class="toc-title">📑 页面导航</h5>
-          <ul class="toc-list">
-            {tocHeadings.map(h => (
-              <li class={`toc-item depth-${h.depth}`}>
-                <a href={`#${h.slug}`}>{h.text}</a>
-              </li>
-            ))}
-          </ul>
-        </div>
+      <aside class="toc-rail">
+        <TableOfContents client:idle headings={tocHeadings} />
       </aside>
     )}
   </div>
 </BaseLayout>
 
+<!-- 客户端脚本：进度条 + 回到顶部 -->
+<script>
+  const bar = document.getElementById('reading-progress');
+  const btnTop = document.getElementById('btn-top');
+
+  function onScroll() {
+    const total = document.documentElement.scrollHeight - window.innerHeight;
+    if (total > 0 && bar) {
+      bar.style.width = `${(window.scrollY / total) * 100}%`;
+    }
+    if (btnTop) {
+      btnTop.classList.toggle('show', window.scrollY > 400);
+    }
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+
+  btnTop?.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+</script>
+
+<!-- TOC 滚动高亮 -->
+<script>
+  (function() {
+    var tocLinks = document.querySelectorAll('.toc-item a');
+    var headings = document.querySelectorAll('.post-body h2[id], .post-body h3[id]');
+    if (!tocLinks.length || !headings.length) return;
+
+    var states = {};
+    headings.forEach(function(h) { states[h.id] = false; });
+
+    var observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        states[entry.target.id] = entry.isIntersecting;
+      });
+
+      // 找到当前可见的最顶部标题
+      var activeId = null;
+      for (var i = 0; i < headings.length; i++) {
+        if (states[headings[i].id]) {
+          activeId = headings[i].id;
+          break;
+        }
+      }
+
+      // 更新 TOC 高亮
+      tocLinks.forEach(function(a) {
+        a.classList.toggle('active', a.getAttribute('href') === '#' + activeId);
+      });
+
+      // 自动滚动 TOC 保持可见
+      if (activeId) {
+        var link = document.querySelector('.toc-item a.active');
+        if (link) link.scrollIntoView({ block: 'nearest', behavior: 'auto' });
+      }
+    }, {
+      rootMargin: '-80px 0px -75% 0px',
+      threshold: 0
+    });
+
+    headings.forEach(function(h) { observer.observe(h); });
+  })();
+</script>
+
 <style>
-  .layout-container {
+  /* ---- 进度条 ---- */
+  .progress-track {
+    position: fixed;
+    top: 64px; left: 0; width: 100%; height: 3px;
+    z-index: 90;
+  }
+  .progress-fill {
+    width: 0%; height: 100%;
+    background: linear-gradient(90deg, var(--vp-c-brand-1), var(--vp-c-brand-2));
+    transition: width 80ms linear;
+  }
+
+  /* ---- 三栏网格 ---- */
+  .post-layout {
     max-width: var(--max-width);
     margin: 0 auto;
+    padding: 36px 24px 100px;
     display: grid;
-    grid-template-columns: 260px 1fr 240px;
-    gap: 32px;
-    padding: 0 24px;
-    position: relative;
+    grid-template-columns: 64px 1fr 260px;
+    gap: 28px;
   }
 
-  /* 响应式布局：没有大纲时 */
-  .layout-container:not(:has(.toc-aside)) {
-    grid-template-columns: 260px 1fr;
+  /* ---- 左侧操作条 ---- */
+  .action-rail {
+    position: sticky; top: 100px;
+    display: flex; flex-direction: column; gap: 12px;
+    height: fit-content;
+  }
+  .rail-btn {
+    width: 42px; height: 42px; border-radius: 50%;
+    background: var(--vp-c-bg-soft);
+    border: 1px solid var(--vp-c-divider);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; color: var(--vp-c-text-2);
+    transition: all .25s ease;
+  }
+  .rail-btn:hover {
+    color: var(--vp-c-brand-1); border-color: var(--vp-c-brand-1);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(230,57,70,.12);
+  }
+  #btn-top { opacity: 0; pointer-events: none; transform: scale(.85); }
+  #btn-top.show { opacity: 1; pointer-events: auto; transform: scale(1); }
+
+  /* ---- 文章卡片 ---- */
+  .post-card {
+    background: var(--vp-c-bg);
+    border: 1px solid var(--vp-c-divider);
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 4px 24px rgba(0,0,0,.03);
   }
 
-  /* 左侧侧边栏 */
-  .sidebar {
-    position: sticky;
-    top: 80px;
-    height: calc(100vh - 100px);
-    overflow-y: auto;
-    padding: 24px 0;
-    border-right: 1px solid var(--vp-c-divider);
+  .post-hero {
+    padding: 56px 48px 32px;
+    background: linear-gradient(180deg, var(--vp-c-bg-soft) 0%, transparent 100%);
   }
-
-  .sidebar-section {
-    margin-bottom: 24px;
+  .hero-meta-row {
+    display: flex; align-items: center; gap: 16px; margin-bottom: 20px;
+    font-size: .85rem;
   }
-
-  .sidebar-title {
-    font-size: 0.85rem;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: var(--vp-c-text-2);
-    margin: 0 0 12px 0;
-    font-weight: 700;
+  .cat-pill {
+    padding: 4px 14px; border-radius: 20px;
+    background: var(--vp-c-brand-soft); color: var(--vp-c-brand-1);
+    font-weight: 700; font-size: .8rem;
   }
+  .reading-time { color: var(--vp-c-text-2); }
 
-  .sidebar-list {
-    list-style: none;
-    padding: 0;
+  .post-title {
+    font-size: 2.4rem; font-weight: 800; line-height: 1.3;
+    margin: 0 0 16px; letter-spacing: -.4px;
+  }
+  .post-desc {
+    font-size: 1.05rem; line-height: 1.6; color: var(--vp-c-text-2);
+    border-left: 3px solid var(--vp-c-brand-1); padding-left: 16px;
     margin: 0;
   }
 
-  .sidebar-list li {
-    margin-bottom: 4px;
+  .post-body {
+    padding: 40px 48px 56px;
   }
 
-  .sidebar-link {
-    display: block;
-    padding: 6px 12px;
-    border-radius: 8px;
-    font-size: 0.9rem;
-    color: var(--vp-c-text-1);
-    transition: all 0.2s ease;
+  /* ---- 底部推荐 ---- */
+  .related-section { margin-top: 56px; }
+  .related-heading {
+    font-size: 1.3rem; font-weight: 700; margin: 0 0 20px; border: none;
   }
-
-  .sidebar-link:hover {
-    background-color: var(--vp-c-bg-soft);
-    color: var(--vp-c-brand-1);
+  .related-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;
   }
-
-  .sidebar-link.active {
-    font-weight: 600;
-    background-color: var(--vp-c-brand-soft);
-    color: var(--vp-c-brand-1);
+  .related-card {
+    background: var(--vp-c-bg-soft); border: 1px solid var(--vp-c-divider);
+    border-radius: 14px; padding: 20px;
+    transition: all .3s ease; display: flex; flex-direction: column;
   }
-
-  /* 中间内容区 */
-  .content-wrapper {
-    min-width: 0; /* 防止 code 元素撑开布局 */
-    padding: 24px 0 60px;
+  .related-card:hover {
+    transform: translateY(-4px); border-color: var(--vp-c-brand-1);
+    box-shadow: 0 8px 20px rgba(0,0,0,.05);
   }
+  .rc-cat { font-size: .75rem; font-weight: 600; color: var(--vp-c-brand-1); margin-bottom: 8px; }
+  .related-card h4 { margin: 0 0 6px; font-size: 1rem; font-weight: 700; color: var(--vp-c-text-1); }
+  .related-card p { margin: 0; font-size: .84rem; color: var(--vp-c-text-2); }
 
-  /* 右侧大纲 (TOC) */
-  .toc-aside {
-    position: sticky;
-    top: 80px;
-    height: calc(100vh - 100px);
-    overflow-y: auto;
-    padding: 24px 0;
+  /* ---- 右侧大纲 ---- */
+  .toc-rail {
+    position: sticky; top: 100px;
+    height: calc(100vh - 120px); overflow-y: auto;
   }
-
-  .toc-container {
-    border-left: 1px solid var(--vp-c-divider);
-    padding-left: 16px;
+  .toc-card {
+    background: var(--vp-c-bg-soft); border: 1px solid var(--vp-c-divider);
+    border-radius: 14px; padding: 18px;
   }
-
-  .toc-title {
-    font-size: 0.85rem;
-    margin: 0 0 12px 0;
-    color: var(--vp-c-text-1);
-    font-weight: 700;
+  .toc-heading {
+    font-size: .85rem; font-weight: 700; margin: 0 0 14px;
   }
-
   .toc-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
+    list-style: none; padding: 0; margin: 0;
+    display: flex; flex-direction: column; gap: 6px;
   }
-
   .toc-item a {
-    font-size: 0.85rem;
-    color: var(--vp-c-text-2);
-    transition: color 0.15s ease;
+    font-size: .84rem; color: var(--vp-c-text-2);
+    transition: color .15s; display: block; line-height: 1.45;
+    padding: 2px 0;
   }
-
-  .toc-item a:hover {
+  .toc-item a:hover { color: var(--vp-c-brand-1); }
+  .toc-item a.active {
     color: var(--vp-c-brand-1);
+    font-weight: 600;
   }
+  .toc-item.is-sub { padding-left: 14px; }
 
-  .toc-item.depth-3 {
-    padding-left: 12px;
+  /* ---- 响应式 ---- */
+  @media (max-width: 1080px) {
+    .post-layout { grid-template-columns: 56px 1fr; }
+    .toc-rail { display: none; }
+    .related-grid { grid-template-columns: 1fr; }
   }
-
-  /* 移动端适配 */
-  @media (max-width: 1024px) {
-    .layout-container {
-      grid-template-columns: 220px 1fr;
-    }
-    .toc-aside {
-      display: none;
-    }
-  }
-
   @media (max-width: 768px) {
-    .layout-container {
-      grid-template-columns: 1fr;
-    }
-    .sidebar {
-      display: none; /* 简易起见，移动端先隐藏侧边栏 */
-    }
+    .post-layout { grid-template-columns: 1fr; padding: 20px 16px 80px; }
+    .action-rail { display: none; }
+    .post-hero { padding: 36px 24px 24px; }
+    .post-title { font-size: 1.8rem; }
+    .post-body { padding: 24px 24px 36px; }
   }
 </style>

@@ -1,0 +1,122 @@
+---
+// src/components/StatsCard.astro
+import { getCollection } from 'astro:content';
+
+const allPosts = await getCollection('wiki');
+
+// 计算统计数据
+const totalPosts = allPosts.filter(p => p.id !== 'index' && !p.id.endsWith('/index')).length;
+
+// 计算分类数量
+const categories = new Map<string, number>();
+allPosts.forEach(post => {
+  if (post.id !== 'index' && !post.id.endsWith('/index')) {
+    const cat = post.id.split('/')[0];
+    categories.set(cat, (categories.get(cat) || 0) + 1);
+  }
+});
+
+// 计算标签数量
+let tagCount = 0;
+allPosts.forEach(post => {
+  if (post.data.tags) {
+    tagCount += post.data.tags.length;
+  }
+});
+---
+
+<div class="stats-grid">
+  <div class="stat-card">
+    <div class="stat-icon">📚</div>
+    <div class="stat-content">
+      <div class="stat-number">{totalPosts}</div>
+      <div class="stat-label">篇文章</div>
+    </div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon">📂</div>
+    <div class="stat-content">
+      <div class="stat-number">{categories.size}</div>
+      <div class="stat-label">个分类</div>
+    </div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon">🏷️</div>
+    <div class="stat-content">
+      <div class="stat-number">{tagCount}</div>
+      <div class="stat-label">个标签</div>
+    </div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon">⚡</div>
+    <div class="stat-content">
+      <div class="stat-number">∞</div>
+      <div class="stat-label">持续更新</div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 16px;
+    margin: 40px 0;
+  }
+
+  .stat-card {
+    padding: 24px;
+    background: var(--vp-c-bg-soft);
+    border: 1px solid var(--vp-c-divider);
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    transition: all 0.3s ease;
+  }
+
+  .stat-card:hover {
+    border-color: var(--vp-c-brand-1);
+    transform: translateY(-4px);
+  }
+
+  .stat-icon {
+    font-size: 2rem;
+    min-width: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .stat-content {
+    flex: 1;
+  }
+
+  .stat-number {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: var(--vp-c-text-1);
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-size: 0.85rem;
+    color: var(--vp-c-text-2);
+    margin-top: 4px;
+  }
+
+  @media (max-width: 768px) {
+    .stats-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .stat-card {
+      flex-direction: column;
+      text-align: center;
+    }
+
+    .stat-icon {
+      min-width: auto;
+    }
+  }
+</style>

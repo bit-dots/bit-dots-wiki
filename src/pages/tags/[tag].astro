@@ -1,0 +1,203 @@
+---
+// src/pages/tags/[tag].astro
+import { getCollection } from 'astro:content';
+import SEO from '../../components/SEO.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+export async function getStaticPaths() {
+  const allEntries = await getCollection('wiki');
+  
+  // 获取所有标签
+  const tags = new Set<string>();
+  allEntries.forEach(entry => {
+    if (entry.data.tags) {
+      entry.data.tags.forEach(tag => {
+        tags.add(tag);
+      });
+    }
+  });
+
+  return Array.from(tags).map(tag => ({
+    params: { tag },
+    props: { allEntries },
+  }));
+}
+
+interface Props {
+  allEntries: any[];
+}
+
+const { allEntries } = Astro.props;
+const { tag } = Astro.params;
+
+// 筛选含有该标签的文章
+const taggedPosts = allEntries
+  .filter(entry => {
+    if (entry.id === 'index' || entry.id.endsWith('/index')) return false;
+    return entry.data.tags && entry.data.tags.includes(tag);
+  })
+  .sort((a, b) => {
+    const dateA = a.data.pubDate ? new Date(a.data.pubDate).getTime() : 0;
+    const dateB = b.data.pubDate ? new Date(b.data.pubDate).getTime() : 0;
+    return dateB - dateA;
+  });
+
+const pageTitle = `标签: ${tag} - Bit-Dots`;
+---
+
+<BaseLayout title={pageTitle} description={`查看所有标签为 "${tag}" 的文章`}>
+  <SEO title={pageTitle} description={`查看所有标签为 "${tag}" 的文章`} url={Astro.url.toString()} type="website" />
+  <div class="tag-page">
+    <!-- 标签头部 -->
+    <header class="tag-header">
+      <h1 class="tag-title">
+        <span class="tag-label">🏷️</span>
+        {tag}
+      </h1>
+      <p class="tag-count">共有 {taggedPosts.length} 篇文章</p>
+    </header>
+
+    <!-- 文章列表 -->
+    <main class="posts-container">
+      {taggedPosts.length > 0 ? (
+        <div class="posts-list">
+          {taggedPosts.map(post => {
+            let url = `/${post.id}`;
+            return (
+              <article class="post-item">
+                <a href={url} class="post-link">
+                  <h3 class="post-title">{post.data.title || post.id.split('/').pop()}</h3>
+                </a>
+                {post.data.description && (
+                  <p class="post-desc">{post.data.description}</p>
+                )}
+                <div class="post-meta">
+                  <span class="post-category">
+                    {post.id.startsWith('finance') ? '📈 复利' : post.id.startsWith('tech') ? '🚀 技术' : '📝 笔记'}
+                  </span>
+                  {post.data.pubDate && (
+                    <time class="post-date">
+                      {new Date(post.data.pubDate).toLocaleDateString('zh-CN')}
+                    </time>
+                  )}
+                </div>
+              </article>
+            );
+          })}
+        </div>
+      ) : (
+        <div class="empty-state">
+          <p>暂无该标签的文章</p>
+        </div>
+      )}
+    </main>
+  </div>
+</BaseLayout>
+
+<style>
+  .tag-page {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 40px 20px 80px;
+  }
+
+  .tag-header {
+    text-align: center;
+    margin-bottom: 48px;
+  }
+
+  .tag-title {
+    font-size: 2.2rem;
+    font-weight: 800;
+    margin: 0 0 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+  }
+
+  .tag-label {
+    font-size: 2.5rem;
+  }
+
+  .tag-count {
+    font-size: 1rem;
+    color: var(--vp-c-text-2);
+    margin: 0;
+  }
+
+  .posts-container {
+    padding: 0;
+  }
+
+  .posts-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .post-item {
+    padding: 24px;
+    background: var(--vp-c-bg-soft);
+    border: 1px solid var(--vp-c-divider);
+    border-radius: 12px;
+    transition: all 0.3s ease;
+  }
+
+  .post-item:hover {
+    border-color: var(--vp-c-brand-1);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  }
+
+  .post-link {
+    text-decoration: none;
+  }
+
+  .post-title {
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin: 0 0 12px;
+    color: var(--vp-c-text-1);
+    line-height: 1.4;
+  }
+
+  .post-item:hover .post-title {
+    color: var(--vp-c-brand-1);
+  }
+
+  .post-desc {
+    font-size: 0.95rem;
+    color: var(--vp-c-text-2);
+    margin: 0 0 12px;
+    line-height: 1.5;
+  }
+
+  .post-meta {
+    display: flex;
+    gap: 16px;
+    font-size: 0.85rem;
+    color: var(--vp-c-text-2);
+  }
+
+  .post-category {
+    font-weight: 500;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--vp-c-text-2);
+    font-size: 1.1rem;
+  }
+
+  @media (max-width: 768px) {
+    .tag-page {
+      padding: 24px 16px 60px;
+    }
+
+    .tag-title {
+      font-size: 1.6rem;
+    }
+  }
+</style>

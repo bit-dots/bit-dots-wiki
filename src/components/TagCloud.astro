@@ -1,0 +1,106 @@
+---
+// src/components/TagCloud.astro
+import { getCollection } from 'astro:content';
+
+const allPosts = await getCollection('wiki');
+
+// 收集所有标签
+const tagMap = new Map<string, number>();
+allPosts.forEach(post => {
+  if (post.data.tags) {
+    post.data.tags.forEach((tag: string) => {
+      tagMap.set(tag, (tagMap.get(tag) || 0) + 1);
+    });
+  }
+});
+
+// 转换为数组并排序
+const tags = Array.from(tagMap.entries())
+  .sort((a, b) => b[1] - a[1])
+  .slice(0, 20); // 取前 20 个
+
+// 计算大小等级
+const maxCount = Math.max(...tags.map(t => t[1]), 1);
+const minCount = Math.min(...tags.map(t => t[1]), 1);
+
+interface Tag {
+  name: string;
+  count: number;
+  size: number;
+}
+
+const tagList: Tag[] = tags.map(([name, count]) => {
+  const size = count === 1 ? 0.8 : count === 2 ? 1 : count <= 5 ? 1.2 : 1.4;
+  return { name, count, size };
+});
+---
+
+<div class="tag-cloud">
+  <div class="cloud-content">
+    {tagList.map(tag => (
+      <a 
+        href={`/tags/${tag.name}`}
+        class="tag-item"
+        style={`font-size: ${tag.size}rem`}
+        title={`${tag.count} 篇文章`}
+      >
+        {tag.name}
+        <span class="tag-count">{tag.count}</span>
+      </a>
+    ))}
+  </div>
+</div>
+
+<style>
+  .tag-cloud {
+    padding: 32px;
+    background: linear-gradient(135deg, var(--vp-c-bg-soft) 0%, rgba(230,57,70,.02) 100%);
+    border: 1px solid var(--vp-c-divider);
+    border-radius: 16px;
+    margin: 40px 0;
+  }
+
+  .cloud-content {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .tag-item {
+    padding: 6px 16px;
+    background: var(--vp-c-bg);
+    border: 1px solid var(--vp-c-divider);
+    border-radius: 20px;
+    color: var(--vp-c-text-1);
+    text-decoration: none;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .tag-item:hover {
+    background: var(--vp-c-brand-soft);
+    border-color: var(--vp-c-brand-1);
+    color: var(--vp-c-brand-1);
+    transform: scale(1.05);
+  }
+
+  .tag-count {
+    font-size: 0.75rem;
+    opacity: 0.6;
+  }
+
+  @media (max-width: 768px) {
+    .tag-cloud {
+      padding: 24px;
+    }
+
+    .cloud-content {
+      gap: 12px;
+    }
+  }
+</style>

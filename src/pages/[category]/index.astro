@@ -1,0 +1,286 @@
+---
+// src/pages/[category]/index.astro
+import { getCollection } from 'astro:content';
+import SEO from '../../components/SEO.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const { category } = Astro.params;
+
+export async function getStaticPaths() {
+  const allEntries = await getCollection('wiki');
+  
+  // 获取所有独立分类
+  const categories = new Set<string>();
+  allEntries.forEach(entry => {
+    const firstSegment = entry.id.split('/')[0];
+    if (!['index'].includes(firstSegment)) {
+      categories.add(firstSegment);
+    }
+  });
+
+  return Array.from(categories).map(cat => ({
+    params: { category: cat },
+    props: { allEntries },
+  }));
+}
+
+interface Props {
+  allEntries: any[];
+}
+
+const { allEntries } = Astro.props;
+
+// 筛选该分类下的所有文章
+const categoryPosts = allEntries
+  .filter(entry => {
+    if (entry.id === 'index' || entry.id.endsWith('/index')) return false;
+    return entry.id.startsWith(category + '/');
+  })
+  .sort((a, b) => {
+    const dateA = a.data.pubDate ? new Date(a.data.pubDate).getTime() : 0;
+    const dateB = b.data.pubDate ? new Date(b.data.pubDate).getTime() : 0;
+    return dateB - dateA;
+  });
+
+// 分类标签映射
+const categoryMeta: Record<string, { label: string; icon: string; description: string; color: string }> = {
+  tech: {
+    label: '技术探索',
+    icon: '🚀',
+    description: '深入分析技术细节，分享开发经验与最佳实践',
+    color: '#3b82f6'
+  },
+  finance: {
+    label: '金融洞察',
+    icon: '📈',
+    description: '市场分析、投资笔记与理财思考',
+    color: '#10b981'
+  },
+  life: {
+    label: '生活随笔',
+    icon: '☕',
+    description: '摄影、旅行与生活感悟',
+    color: '#f59e0b'
+  },
+  project: {
+    label: '项目档案',
+    icon: '📁',
+    description: '创意项目与实验性作品记录',
+    color: '#8b5cf6'
+  }
+};
+
+const meta = categoryMeta[category!] || { label: category, icon: '📝', description: '', color: '#6b7280' };
+const pageTitle = `${meta.label} - Bit-Dots`;
+---
+
+<BaseLayout title={pageTitle} description={meta.description}>
+  <SEO title={pageTitle} description={meta.description} url={Astro.url.toString()} type="website" />
+  <div class="category-page">
+    <!-- 分类头部 -->
+    <header class="category-header">
+      <div class="header-backdrop" style={`--color: ${meta.color}`}></div>
+      <div class="header-content">
+        <h1 class="category-title">
+          <span class="category-icon">{meta.icon}</span>
+          {meta.label}
+        </h1>
+        <p class="category-desc">{meta.description}</p>
+        <div class="header-stats">
+          <span class="stat">📚 {categoryPosts.length} 篇文章</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- 文章列表 -->
+    <main class="posts-container">
+      {categoryPosts.length > 0 ? (
+        <div class="posts-grid">
+          {categoryPosts.map(post => {
+            let url = `/${post.id}`;
+            const tags = post.data.tags || [];
+            return (
+              <article class="post-card">
+                <a href={url} class="post-link">
+                  <h3 class="post-title">{post.data.title || post.id.split('/').pop()}</h3>
+                </a>
+                {post.data.description && (
+                  <p class="post-desc">{post.data.description}</p>
+                )}
+                <div class="post-meta">
+                  {post.data.pubDate && (
+                    <time class="post-date">
+                      📅 {new Date(post.data.pubDate).toLocaleDateString('zh-CN')}
+                    </time>
+                  )}
+                  {post.data.author && (
+                    <span class="post-author">✍️ {post.data.author}</span>
+                  )}
+                </div>
+                {tags.length > 0 && (
+                  <div class="post-tags">
+                    {tags.map((tag: string) => (
+                      <span class="tag" key={tag}>{tag}</span>
+                    ))}
+                  </div>
+                )}
+              </article>
+            );
+          })}
+        </div>
+      ) : (
+        <div class="empty-state">
+          <p>暂无文章</p>
+        </div>
+      )}
+    </main>
+  </div>
+</BaseLayout>
+
+<style define:vars={{ color: meta.color }}>
+  .category-page {
+    max-width: 1080px;
+    margin: 0 auto;
+  }
+
+  .category-header {
+    position: relative;
+    padding: 60px 20px;
+    margin-bottom: 40px;
+    overflow: hidden;
+    border-radius: 16px;
+  }
+
+  .header-backdrop {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, color-mix(in srgb, var(--color) 100%, transparent 0%) 0%, color-mix(in srgb, var(--color) 50%, transparent 50%) 100%);
+    opacity: 0.1;
+    z-index: -1;
+  }
+
+  .header-content {
+    position: relative;
+    z-index: 1;
+  }
+
+  .category-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin: 0 0 12px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .category-icon {
+    font-size: 3rem;
+  }
+
+  .category-desc {
+    font-size: 1.1rem;
+    color: var(--color-text-muted);
+    margin: 0 0 16px;
+    max-width: 600px;
+  }
+
+  .header-stats {
+    display: flex;
+    gap: 24px;
+    font-size: 0.95rem;
+    color: var(--color-text-muted);
+  }
+
+  .posts-container {
+    padding: 0 20px 60px;
+  }
+
+  .posts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 24px;
+  }
+
+  .post-card {
+    padding: 24px;
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    transition: all 0.3s ease;
+  }
+
+  .post-card:hover {
+    border-color: var(--color-accent);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  }
+
+  .post-link {
+    text-decoration: none;
+  }
+
+  .post-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin: 0 0 12px;
+    color: var(--color-text);
+    line-height: 1.4;
+  }
+
+  .post-card:hover .post-title {
+    color: var(--color-accent);
+  }
+
+  .post-desc {
+    font-size: 0.95rem;
+    color: var(--color-text-muted);
+    margin: 0 0 12px;
+    line-height: 1.5;
+  }
+
+  .post-meta {
+    display: flex;
+    gap: 16px;
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+  }
+
+  .post-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .tag {
+    display: inline-block;
+    padding: 4px 12px;
+    background: color-mix(in srgb, var(--color-accent) 100%, transparent 85%);
+    color: var(--color-accent);
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 500;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--color-text-muted);
+    font-size: 1.1rem;
+  }
+
+  @media (max-width: 768px) {
+    .category-title {
+      font-size: 1.8rem;
+    }
+
+    .category-icon {
+      font-size: 2rem;
+    }
+
+    .posts-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

@@ -1,0 +1,105 @@
+---
+// src/pages/404.astro
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="404 - 页面未找到">
+  <div class="error-container">
+    <div class="error-content">
+      <h1 class="error-code">404</h1>
+      <h2 class="error-title">哎呀，页面未找到</h2>
+      <p class="error-desc">
+        这个页面可能已被移除、重新命名或暂不存在。让我们从这里重新开始吧。
+      </p>
+      <div class="error-actions">
+        <a href="/" class="btn-error-primary">🏠 返回首页</a>
+        <a href="/intro" class="btn-error-secondary">📝 探索笔记</a>
+      </div>
+    </div>
+    <div class="error-illustration">
+      <svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="100" cy="100" r="90" fill="var(--vp-c-bg-soft)" stroke="var(--vp-c-divider)" stroke-width="2"/>
+        <text x="100" y="120" font-size="60" font-weight="bold" text-anchor="middle" fill="var(--vp-c-text-2)">404</text>
+      </svg>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .error-container {
+    max-width: 600px;
+    margin: 80px auto;
+    padding: 40px 24px;
+    text-align: center;
+  }
+
+  .error-content {
+    z-index: 10;
+    position: relative;
+  }
+
+  .error-code {
+    font-size: 5rem;
+    font-weight: 900;
+    margin: 0 0 8px;
+    background: linear-gradient(135deg, #e63946 0%, #457b9d 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .error-title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 0 0 16px;
+    color: var(--vp-c-text-1);
+  }
+
+  .error-desc {
+    font-size: 1.05rem;
+    color: var(--vp-c-text-2);
+    line-height: 1.6;
+    margin: 0 0 32px;
+  }
+
+  .error-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .btn-error-primary,
+  .btn-error-secondary {
+    padding: 12px 28px;
+    border-radius: 12px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    text-decoration: none;
+  }
+
+  .btn-error-primary {
+    background: linear-gradient(135deg, #e63946, #c1121f);
+    color: white;
+  }
+
+  .btn-error-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(230, 57, 70, 0.25);
+  }
+
+  .btn-error-secondary {
+    border: 1px solid var(--vp-c-divider);
+    color: var(--vp-c-text-1);
+  }
+
+  .btn-error-secondary:hover {
+    background: var(--vp-c-bg-soft);
+    border-color: var(--vp-c-brand-1);
+    color: var(--vp-c-brand-1);
+  }
+
+  .error-illustration {
+    margin-top: 48px;
+    opacity: 0.6;
+  }
+</style>
