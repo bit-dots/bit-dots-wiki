@@ -48,6 +48,14 @@
   --vp-c-brand-soft: rgba(230, 57, 70, 0.2);
 }
 
+:root[data-theme="dark"] .astro-code-themes {
+  background-color: var(--shiki-dark-bg) !important;
+}
+
+:root[data-theme="dark"] .astro-code-themes span {
+  color: var(--shiki-dark) !important;
+}
+
 /* 手动浅色模式（覆盖系统深色偏好） */
 :root[data-theme="light"] {
   --vp-c-bg: #ffffff;
@@ -59,6 +67,9 @@
   --vp-c-brand-2: #1d3557;
   --vp-c-brand-soft: rgba(230, 57, 70, 0.1);
 }
+
+/* 浅色模式下的代码块：使用默认样式（无需特殊处理）*/
+/* Shiki 默认生成的 color 和 background-color 就是浅色的 */
 
 * {
   box-sizing: border-box;

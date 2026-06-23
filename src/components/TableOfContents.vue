@@ -52,8 +52,8 @@ const scrollToHeading = (e: Event) => {
   top: 80px;
   max-width: 260px;
   padding: 16px;
-  background: var(--color-bg-secondary);
-  border: 1px solid var(--color-border);
+  background: var(--vp-c-bg-soft);
+  border: 1px solid var(--vp-c-divider);
   border-radius: 12px;
   font-size: 14px;
   line-height: 1.6;
@@ -74,7 +74,7 @@ const scrollToHeading = (e: Event) => {
   display: flex;
   align-items: center;
   font-weight: 600;
-  color: var(--color-text);
+  color: var(--vp-c-text-1);
   margin: 0;
   padding: 0;
 }
@@ -107,7 +107,7 @@ const scrollToHeading = (e: Event) => {
 
 .toc-item.depth-3 {
   margin-left: 16px;
-  color: var(--color-text-muted);
+  color: var(--vp-c-text-2);
 }
 
 .toc-item a {
@@ -117,7 +117,7 @@ const scrollToHeading = (e: Event) => {
 }
 
 .toc-item a:hover {
-  color: var(--color-accent);
+  color: var(--vp-c-brand-1);
   text-decoration: underline;
 }
 
