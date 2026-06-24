@@ -97,7 +97,7 @@ a:hover {
 
 /* 文章内容区域样式适配 (类似 VitePress 的 .vp-doc) */
 .content-doc {
-  max-width: 860px;
+  max-width: clamp(640px, 65%, 960px);
   margin: 0 auto;
   padding: 40px 24px;
 }

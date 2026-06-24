@@ -1,0 +1,185 @@
+---
+// src/pages/[category].astro
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+export async function getStaticPaths() {
+  const categories = ['tech', 'finance', 'life', 'project'];
+  return categories.map(cat => ({ params: { category: cat } }));
+}
+
+const { category } = Astro.params;
+
+const categoryMeta: Record<string, { icon: string; name: string; desc: string }> = {
+  tech:    { icon: '🚀', name: '技术探索', desc: 'Vue, AI, 效率工具与代码实践' },
+  finance: { icon: '💹', name: '复利人生', desc: '市场分析、投资笔记与理财思考' },
+  life:    { icon: '☕', name: '生活随笔', desc: '摄影、旅行与感悟' },
+  project: { icon: '📁', name: '项目档案', desc: '创造记录与实验性项目' },
+};
+
+const meta = categoryMeta[category] || { icon: '📝', name: category, desc: '' };
+
+const allPosts = await getCollection('wiki');
+const posts = allPosts
+  .filter(p => p.id.startsWith(category + '/'))
+  .sort((a, b) => {
+    const dateA = a.data.pubDate ? new Date(a.data.pubDate).getTime() : 0;
+    const dateB = b.data.pubDate ? new Date(b.data.pubDate).getTime() : 0;
+    return dateB - dateA;
+  });
+---
+
+<BaseLayout title={`${meta.name} - Bit-Dots`} description={meta.desc}>
+  <div class="category-page">
+    <header class="cat-hero">
+      <span class="cat-icon">{meta.icon}</span>
+      <h1 class="cat-name">{meta.name}</h1>
+      <p class="cat-desc">{meta.desc}</p>
+      <span class="cat-count">{posts.length} 篇文章</span>
+    </header>
+
+    {posts.length > 0 ? (
+      <div class="post-list">
+        {posts.map(post => {
+          const url = `/${post.id}`;
+          return (
+            <article class="post-card">
+              <a href={url} class="post-link">
+                {post.data.pubDate && (
+                  <time class="post-date">
+                    {new Date(post.data.pubDate).toLocaleDateString('zh-CN', {
+                      year: 'numeric', month: 'long', day: 'numeric'
+                    })}
+                  </time>
+                )}
+                <h2 class="post-title">{post.data.title || post.id.split('/').pop()}</h2>
+                {post.data.description && <p class="post-desc">{post.data.description}</p>}
+                {post.data.tags && post.data.tags.length > 0 && (
+                  <div class="post-tags">
+                    {post.data.tags.map((tag: string) => (
+                      <span class="tag">{tag}</span>
+                    ))}
+                  </div>
+                )}
+              </a>
+            </article>
+          );
+        })}
+      </div>
+    ) : (
+      <div class="empty-state">
+        <p>🚧 这个分类还没有内容，敬请期待。</p>
+        <a href="/" class="back-link">返回首页 →</a>
+      </div>
+    )}
+  </div>
+</BaseLayout>
+
+<style>
+  .category-page {
+    max-width: clamp(640px, 65%, 960px);
+    margin: 0 auto;
+    padding: 60px 24px 100px;
+  }
+
+  .cat-hero {
+    text-align: center;
+    padding: 60px 0 48px;
+  }
+  .cat-icon {
+    font-size: 3.5rem;
+    display: block;
+    margin-bottom: 16px;
+  }
+  .cat-name {
+    font-size: 2.2rem;
+    font-weight: 800;
+    margin: 0 0 12px;
+    letter-spacing: -0.5px;
+    background: linear-gradient(135deg, var(--vp-c-brand-1), var(--vp-c-brand-2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .cat-desc {
+    font-size: 1.1rem;
+    color: var(--vp-c-text-2);
+    margin: 0 0 16px;
+  }
+  .cat-count {
+    display: inline-block;
+    padding: 4px 16px;
+    border-radius: 20px;
+    background: var(--vp-c-bg-soft);
+    color: var(--vp-c-text-2);
+    font-size: 0.85rem;
+  }
+
+  .post-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .post-card {
+    border-bottom: 1px solid var(--vp-c-divider);
+  }
+  .post-card:last-child {
+    border-bottom: none;
+  }
+  .post-link {
+    display: block;
+    padding: 28px 0;
+    text-decoration: none;
+    color: inherit;
+    transition: opacity 0.2s;
+  }
+  .post-link:hover {
+    opacity: 0.7;
+  }
+  .post-date {
+    display: block;
+    font-size: 0.82rem;
+    color: var(--vp-c-text-2);
+    margin-bottom: 8px;
+  }
+  .post-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin: 0 0 8px;
+    color: var(--vp-c-text-1);
+  }
+  .post-desc {
+    font-size: 0.95rem;
+    color: var(--vp-c-text-2);
+    margin: 0 0 12px;
+    line-height: 1.6;
+  }
+  .post-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .tag {
+    padding: 2px 10px;
+    border-radius: 12px;
+    background: var(--vp-c-bg-soft);
+    color: var(--vp-c-text-2);
+    font-size: 0.78rem;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 80px 0;
+    color: var(--vp-c-text-2);
+  }
+  .back-link {
+    display: inline-block;
+    margin-top: 16px;
+    color: var(--vp-c-brand-1);
+    text-decoration: none;
+  }
+  .back-link:hover {
+    text-decoration: underline;
+  }
+</style>
