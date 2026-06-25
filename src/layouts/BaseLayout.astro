@@ -19,9 +19,9 @@ const currentPath = Astro.url.pathname;
 
 // 导航链接定义
 const navLinks = [
-  { text: '首页', href: '/', icon: '🏠' },
-  { text: '复利', href: '/finance', icon: '📈' },
-  { text: '关于', href: '/about', icon: 'ℹ️' },
+  { text: '首页', href: '/' },
+  { text: '复利', href: '/finance' },
+  { text: '关于', href: '/about' },
 ];
 
 const isActive = (href: string) => {
@@ -77,8 +77,7 @@ const isActive = (href: string) => {
               href={link.href}
               class:list={['nav-link', { active: isActive(link.href) }]}
             >
-              <span class="nav-icon">{link.icon}</span>
-              <span>{link.text}</span>
+              {link.text}
             </a>
           ))}
         </nav>
@@ -103,7 +102,7 @@ const isActive = (href: string) => {
     <div class="mobile-menu" id="mobile-menu">
       <nav class="mobile-nav">
         {navLinks.map(link => (
-          <a href={link.href} class="mobile-link">{link.icon} {link.text}</a>
+          <a href={link.href} class="mobile-link">{link.text}</a>
         ))}
       </nav>
     </div>
@@ -261,19 +260,30 @@ const isActive = (href: string) => {
   /* 导航链接 */
   .nav-menu { display: flex; gap: 6px; }
   .nav-link {
-    display: flex; align-items: center; gap: 5px;
-    padding: 6px 14px; border-radius: 10px;
+    position: relative;
+    display: flex; align-items: center;
+    padding: 6px 14px; border-radius: 6px;
     font-size: .9rem; font-weight: 500;
     color: var(--vp-c-text-2);
-    transition: all .2s ease;
+    transition: color .2s ease;
   }
-  .nav-icon { font-size: .95rem; }
   .nav-link:hover {
-    background: var(--vp-c-bg-soft); color: var(--vp-c-text-1);
+    color: var(--vp-c-text-1);
   }
   .nav-link.active {
-    background: var(--vp-c-brand-soft); color: var(--vp-c-brand-1);
+    color: var(--vp-c-text-1);
     font-weight: 600;
+  }
+  .nav-link.active::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 20px;
+    height: 2px;
+    border-radius: 1px;
+    background: linear-gradient(90deg, var(--vp-c-brand-1), var(--vp-c-brand-2));
   }
 
   /* 主题切换按钮 */
